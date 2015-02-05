@@ -1,10 +1,4 @@
 function  manualMaskDetection(params,parentMaskEditHandle)
-% %Uncomment for testing
-% function manualMaskDetection
-%
-% params.general.processingFolder = 'C:\Users\Vardan\Documents\MATLAB\plaque2.0\src';
-% params.general.fileNamePattern = '(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*).TIF';
-% params.mask.selectedChannel= 'w1';
 
 
 manualMaskUIArray.mainHandle = figure('units','pixels',...

@@ -1,11 +1,5 @@
 function plaque2(varargin)
 
-% CometsAssay('C:\Users\SPIM\Desktop\cometsassay\Sampledata\','C:\Users\SPIM\Desktop\cometsassay\','testPlate')
-
-
-
-
-
 %Load parameter structure from the first argument
 parameters = varargin{1};
 
