@@ -46,8 +46,10 @@ function bw = createCircle(imageSize,center,radius)
 bw = (rowsInImage - center(2)).^2 ...
     + (columnsInImage - center(1)).^2 <= radius.^2;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by

@@ -11,8 +11,10 @@ set(logEdit,'String',oldText);
 drawnow
 % guidata(handl es.logEdit,handles)
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
