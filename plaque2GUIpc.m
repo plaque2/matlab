@@ -1110,11 +1110,21 @@ end
 function cellOut = struct2cellwithfields(inputStruct)
 % convert the input structure to a single collumn cell array where each row
 % is a string of  "field - value"
-values = cellfun(@num2str, struct2cell(inputStruct), 'UniformOutput', false);
+values = cellfun(@check_numeric, struct2cell(inputStruct), 'UniformOutput', false);
 fields = fieldnames(inputStruct);
 
 cellOut = strcat({'    '},fields,{' - '},values);
 
+function output = check_numeric(input)
+disp(input)
+if isnumeric(input)
+    
+    input = num2str(input)
+elseif iscell(input)
+    input = cell2mat(input)
+end
+  
+output = input;
 
 
 % values = cellfun(@num2str, struct2cell(params), 'UniformOutput', false);
