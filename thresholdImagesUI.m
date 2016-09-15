@@ -34,14 +34,14 @@ thresholdUIArray.inputImageHolder = axes('units','pixels',...
     'position',[20 70  360 360],...
     'xtick',[],'ytick',[],'box','on','XColor',[0.512 0.512 0.512],'YColor', [0.512 0.512 0.512],'TickDir','in');
 
-thresholdUIArray.inputImageHolderTxt = title(thresholdUIArray.inputImageHolder,'Input Image','FontWeight','bold','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+thresholdUIArray.inputImageHolderTxt = title(thresholdUIArray.inputImageHolder,'Input Image','FontWeight','bold','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 
 thresholdUIArray.zoomedImageHolder = axes('units','pixels',...
     'Parent',thresholdUIArray.mainHandle,...
     'position',[420 70  360 360],...
     'xtick',[],'ytick',[],'box','on','XColor',[0.512 0.512 0.512],'YColor', [0.512 0.512 0.512],'TickDir','in');
 
-thresholdUIArray.zoomedImageHolderTxt = title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontWeight','bold','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+thresholdUIArray.zoomedImageHolderTxt = title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontWeight','bold','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 
 
 % %%%%%WELL SELECTION
@@ -236,7 +236,7 @@ end
 
 
 imshow(overlayRGB,'Parent',thresholdUIArray.zoomedImageHolder);
-title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontName','Arial','FontWeight','bold','Fonts',16,'Color',[1 1 1]);
+title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontName','Arial','FontWeight','bold','FontSize',16,'Color',[1 1 1]);
 function applyThreshold(handle,event,thresholdUIArray)
 
 
@@ -272,21 +272,3 @@ if(isempty(str2num(get(handle,'String'))))
         error('parentNotdefined','Parent EditBox Not found')
     end
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
-%     This program is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     This program is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with this program.  If not, see <http://www.gnu.org/licenses/>.

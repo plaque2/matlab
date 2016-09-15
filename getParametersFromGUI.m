@@ -95,6 +95,7 @@ if ((strcmp(type,'ALL') && parameters.general.nucleiFlag)|| strcmp(type,'NUCLEI'
             parameters.nuclei.thresholdCorrectionFactor = str2num(get(handles.thresholdCorrectionFactorEdit,'String'));
         case 4
             parameters.nuclei.selectedThresholdingMethod = 'localOtsuThresholding';
+             parameters.nuclei.thresholdCorrectionFactor = str2num(get(handles.thresholdCorrectionFactorEdit,'String'));
             parameters.nuclei.blockSize = str2num(get(handles.blockSizeEdit,'String'));
             
         otherwise
@@ -146,17 +147,17 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.

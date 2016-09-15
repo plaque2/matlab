@@ -1,4 +1,10 @@
 function  manualMaskDetection(params,parentMaskEditHandle)
+% %Uncomment for testing
+% function manualMaskDetection
+%
+% params.general.processingFolder = 'C:\Users\Vardan\Documents\MATLAB\plaque2.0\src';
+% params.general.fileNamePattern = '(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*).TIF';
+% params.mask.selectedChannel= 'w1';
 
 
 manualMaskUIArray.mainHandle = figure('units','pixels',...
@@ -26,7 +32,7 @@ manualMaskUIArray.inputImageHolder = axes('units','pixels',...
     'position',[5 25  400 400],...
     'xtick',[],'ytick',[],'box','on','XColor',[0.512 0.512 0.512],'YColor', [0.512 0.512 0.512],'TickDir','in');
 
-title(manualMaskUIArray.inputImageHolder,'Select image for masking','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+title(manualMaskUIArray.inputImageHolder,'Select image for masking','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 
 % %%%%%WELL SELECTION
 
@@ -132,7 +138,7 @@ if(autoScaleFlag)
 else
     imshow((im2uint8(currentImage)),'Parent',manualMaskUIArray.inputImageHolder);
 end
-title(manualMaskUIArray.inputImageHolder,'Double click to save','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+title(manualMaskUIArray.inputImageHolder,'Double click to save','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 createEllipse(manualMaskUIArray);
 
 
@@ -143,7 +149,7 @@ wait(ellipseHandle);
 
 BW = createMask(ellipseHandle);
 imshow(BW)
-title(manualMaskUIArray.inputImageHolder,'Mask to save','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+title(manualMaskUIArray.inputImageHolder,'Mask to save','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 maskFileName = [datestr(now,'yy_mm_dd') '_mask.tif'];
 
 if(~isempty(BW))
@@ -158,11 +164,9 @@ if(~isempty(BW))
     end
 end
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by

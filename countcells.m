@@ -1,15 +1,23 @@
 function  [numberOfNuclei] = countcells(BW,minArea,maxArea)
+% 
+% avgArea = (maxArea+minArea)/2;
+% numberOfNuclei = round(sum(BW(:))/avgArea);
+
+STATS = regionprops(BW, 'Image','Area');
 
 
+bwAreas = [STATS.Area];
 
-avgArea = (maxArea+minArea)/2;
-numberOfNuclei = round(sum(BW(:))/avgArea);
+nonClumpedCellNumber = length(bwAreas((bwAreas > minArea)&(bwAreas < maxArea)));
+ClumpedCellNumber = sum(round((bwAreas((bwAreas > maxArea)))/mean(minArea,maxArea)));
+
+numberOfNuclei = nonClumpedCellNumber + ClumpedCellNumber;
 
 
 end
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by

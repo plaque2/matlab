@@ -12,12 +12,22 @@ if(enableFineDetection)
     gaussSigma = virusParams.plaqueGaussianFilterSigma;
     peakRegionSize = virusParams.peakRegionSize ;
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % threshold the input image with the specified threshold
+
+%     se = strel('ball',5,5);
+ % bcg = imopen((inputImage),strel('disk',80)); 
+%  bcg = imread('bcg.tif');
+% inputImage = imgaussfilt(inputImage,10)-bcg;%(inputImage-bcg);
+% imshow(imgaussfilt(inputImage,50)-bcg,[]);
+%  inputImage = adapthisteq(im2uint8(inputImage),'Distribution','rayleigh','Alpha',0.8);
 BW = im2bw(inputImage,virusThreshold);
+%mask = imread('Y:\Analysis\160329-Nelli-plates-1-3\16_05_23_mask_p2.tif');
+%  BW = (imbinarize((inputImage),'adaptive','Sensitivity',virusThreshold,'ForegroundPolarity','dark'));
+%BW(~mask)=0;
 numOfPlaques = 0;
 
-
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if (any(BW(:)))
     
@@ -34,12 +44,19 @@ if (any(BW(:)))
     %Calculate various region properties of the image
     imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity');%'EquivDiameter'
     
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     plaqueRegionProperties = imageProps;
     % get only objects with larger area than minCometArea
     ind = [imageProps.Area] >=minPlaqueArea ;
     
+    maxPlaqueArea = 6*10^6;
+   
     plaqueRegionProperties = plaqueRegionProperties(ind);
+    
+    ind = [plaqueRegionProperties.Area] <= maxPlaqueArea ;
+    
+    plaqueRegionProperties = plaqueRegionProperties(ind);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if (length(plaqueRegionProperties)~=0)
         
@@ -189,20 +206,19 @@ end
 
 
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.

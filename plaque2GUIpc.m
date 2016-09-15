@@ -5,7 +5,7 @@ function varargout = plaque2GUIpc(varargin)
 %
 %      H = PLAQUE2GUIs returns the handle to a new PLAQUE2GUIPC or the handle to
 %      the existing singleton*.
-%
+%s
 %      PLAQUE2GUIPC('CALLBACK',hObject,eventData,handles,...) calls the local
 %      function named CALLBACK in PLAQUE2GUIPC.M with the given input arguments.
 %
@@ -101,7 +101,8 @@ set(handles.nucleiPanel,'Visible','off');
 set(handles.virusPanel,'Visible','off');
 
 
-%allign all panels on top of each other to imitate tab switching
+%allign all panels on top of each other to imitate tab 
+
 stitchPanelPosition =  get(handles.stitchPanel,'Position');
 set(handles.maskPanel,'Position',stitchPanelPosition);
 set(handles.nucleiPanel,'Position',stitchPanelPosition);
@@ -186,8 +187,7 @@ end
 function nucleiTab_Callback(hObject, eventdata, handles)
 % hObject    handle to nucleiTab (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+% handles    structure with handles and user data (see GUIDATA) 
 % Hint: get(hObject,'Value') returns toggle state of nucleiTab
 
 set(handles.stitchPanel,'Visible','off');
@@ -594,8 +594,8 @@ switch get(hObject,'Value')
         set(handles.minimalThresholdTxt,'Enable','off');
         set(handles.minimalThresholdEdit,'Enable','off');
         
-        set(handles.thresholdCorrectionFactorTxt,'Enable','off');
-        set(handles.thresholdCorrectionFactorEdit,'Enable','off');
+        set(handles.thresholdCorrectionFactorTxt,'Enable','on');
+        set(handles.thresholdCorrectionFactorEdit,'Enable','on');
         
         set(handles.blockSizeTxt,'Enable','on');
         set(handles.blockSizeEdit,'Enable','on');
@@ -1671,21 +1671,3 @@ else
     system('start http://plaque2.github.io')
 end
 %  web('http://www.mathworks.com', '-browser')
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
-%     This program is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     This program is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with this program.  If not, see <http://www.gnu.org/licenses/>.

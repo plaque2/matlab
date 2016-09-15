@@ -7,11 +7,11 @@ function [numOfNuclei,BW] = segmentnuclei(inputImage,nucleiParams)
 
 
 
-  
+   processedImage = inputImage;
    artifactThreshold =  nucleiParams.artifactThreshold; % upper threshold for artifact cleaning to enhance otsu thresholding
 %     
 %apply the artifact threshold
-   inputImage(inputImage>2^16*artifactThreshold) = min(inputImage(:));
+   processedImage(processedImage>2^16*artifactThreshold) = min(processedImage(:));
 
 
 
@@ -37,8 +37,40 @@ if (nucleiParams.illuminationCorrectionFlag)
 %     inputImage = histeq(filteredImage);
     
    
-    se = strel('ball',nucleiParams.correctionBallRadius,nucleiParams.correctionBallRadius);
-    inputImage = imtophat(inputImage,se);
+     se = strel('ball',nucleiParams.correctionBallRadius,nucleiParams.correctionBallRadius);
+    
+ bcg = imopen((processedImage),strel('disk',nucleiParams.correctionBallRadius)); 
+%imwrite(bcg,'bcg.tif');
+%bcg = imread('bcg.tif');
+% figure(10)
+% surf(double(bcg(1:100:end,1:100:end))),zlim([0 2000]);
+% ax = gca;
+% ax.YDir = 'reverse';
+% figure(11)
+% imshow((processedImage - bcg),[0 6000]);
+% figure(12)
+% imshow(processedImage,[0 2000]);
+% processedImage = (processedImage - bcg,'Distribution','rayleigh');
+processedImage = processedImage - bcg;
+% K = wiener2(J,[5 5]);
+
+% 
+% 
+% se = strel('disk',nucleiParams.correctionBallRadius);
+% theorPSF = double(se.getnhood);
+% processedImage = edgetaper(processedImage,theorPSF);
+% % theorPSF = ones(size(PSF));
+% processedImage = deconvblind(processedImage,theorPSF,5);
+% t1=imsharpen(processedImage,'Radius',2,'Amount',1);
+% figure(10)
+% imshow(processedImage,[0 6000]);
+% figure(11)
+% imshow(inputImage,[0 6000]);    
+% figure(12)
+% imshow(t1,[0 6000]);    
+% figure(13)
+% im2bw(t1,0.02);        
+%     inputImage = imtophat(inputImage,se);
 
 end
 
@@ -51,14 +83,14 @@ switch nucleiParams.selectedThresholdingMethod
         manualThreshold = nucleiParams.manualThreshold;
        
         %create a B&W using the calculated level
-        BW = im2bw(inputImage,manualThreshold);
+        BW = im2bw(processedImage,manualThreshold);
    
     case 'globalOtsuThresholding'
          
         threshodlCorrectionFactor =  nucleiParams.thresholdCorrectionFactor;
         minimalThreshold =  nucleiParams.minimalThreshold;
      
-        level = graythresh(inputImage);
+        level = graythresh(processedImage);
        
         if level < minimalThreshold
             level = minimalThreshold;
@@ -66,12 +98,13 @@ switch nucleiParams.selectedThresholdingMethod
          disp(['level: ',num2str(level)]);
         
         %create a B&W using the calculated level
-        BW = im2bw(inputImage,level*threshodlCorrectionFactor);
-
+        BW = imbinarize(processedImage,'adaptive','Sensitivity',threshodlCorrectionFactor);
+%         BW = im2bw(processedImage,level*threshodlCorrectionFactor);
+ %figure, imshow(BW)
     case 'localOtsuThresholding'
        
         blockSize =  nucleiParams.blockSize;
-        BW = thresholdLocally(inputImage,blockSize);
+        BW = thresholdLocally(processedImage,blockSize,'FudgeFactor',nucleiParams.thresholdCorrectionFactor);
     otherwise
         error('No valid method selected');
         %throw an error
@@ -79,10 +112,9 @@ end
 
 numOfNuclei = countcells(BW,nucleiParams.minCellArea,nucleiParams.maxCellArea);
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by

@@ -1,5 +1,11 @@
 function plaque2(varargin)
 
+% CometsAssay('C:\Users\SPIM\Desktop\cometsassay\Sampledata\','C:\Users\SPIM\Desktop\cometsassay\','testPlate')
+
+
+
+
+
 %Load parameter structure from the first argument
 parameters = varargin{1};
 
@@ -31,6 +37,12 @@ end
 if(exist('handles'))
     writeinlog(handles.logEdit,'Starting...');
 end
+
+
+
+
+
+
 
 %These flags indicate which modules are activated
 stitchFlag = parameters.general.stitchFlag;
@@ -278,7 +290,7 @@ if(nucleiFlag|| virusFlag)
             
             [numberOfPlaques,plaqueProperties,virusBWImage,peakCoordinates,filteredLabeledBW] =  segmentplaque(currentVirusImage,parameters.virus);
             
-            
+         
             
             ImageDataArray(currentImageIndex).numberOfPlaques = numberOfPlaques;
             
@@ -303,7 +315,7 @@ if(nucleiFlag|| virusFlag)
             if(~isempty(plaqueProperties))
                 %
                 
-                
+                ImageDataArray(currentImageIndex).lesionArea = sum([plaqueProperties.Area]);
                 %Loop  Through all the detected Objectss
                 for iPlaque=1:length(plaqueProperties)
                     
@@ -402,8 +414,18 @@ if(nucleiFlag|| virusFlag)
                     %
                     %
                 end
+            else
+               ImageDataArray(currentImageIndex).lesionArea = 0; 
             end
             %                 %
+            
+            
+            
+            
+            
+            
+            
+            
             
         end
         %
@@ -457,21 +479,20 @@ if(nucleiFlag|| virusFlag)
     
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
