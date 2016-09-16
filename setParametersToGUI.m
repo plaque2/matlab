@@ -39,20 +39,39 @@ if (parameters.general.maskFlag)
     
     
 %     set(handles.maskChannelPopup,'String',parameters.mask.selectedChannel);
-    
-    switch get(handles.maskMethodPopup,'Value')
+
+     switch parameters.mask.selectedMaskDefinitionMethod
         
         case 'loadCustomMask'
-            
-             set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+            set(handles.maskMethodPopup,'Value',2);
+            set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+            set(handles.customMaskFileEdit,'Enable','on');
         case 'manualMaskDefinition'
-%             parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
-%             parameters.mask.customMaskFile = get(handles.customMaskFileEdit,'String');
-        case 'automaticMaskDefinition';
-%             parameters.mask.selectedMaskDefinitionMethod = 'automaticMaskDefinition';
-            %%%%%ADD MASK DETECTED MASK FILE  PATH IF NOT THROW AN ERROR
-    
+            set(handles.maskMethodPopup,'Value',2);
+            set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+            set(handles.customMaskFileEdit,'Enable','on');
+        case 'automaticMaskDefinition'
+            set(handles.maskMethodPopup,'Value',3);
+            set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+        otherwise
+            set(handles.maskMethodPopup,'Value',1);
+            
     end
+%     set(handles.maskMethodPopup,'Value',)
+%     switch get(handles.maskMethodPopup,'Value')
+%         
+%         case 'loadCustomMask'
+%               
+% %              parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
+%              set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+%         case 'manualMaskDefinition'
+% %             parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
+% %             parameters.mask.customMaskFile = get(handles.customMaskFileEdit,'String');
+%         case 'automaticMaskDefinition';
+% %             parameters.mask.selectedMaskDefinitionMethod = 'automaticMaskDefinition';
+%             %%%%%ADD MASK DETECTED MASK FILE  PATH IF NOT THROW AN ERROR
+%     
+%     end
     
 end
 
