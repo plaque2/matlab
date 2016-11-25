@@ -981,8 +981,8 @@ function inputFolderBrowse_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %
 % currentDir = get(handles.processingFolderEdit,'String');
-if(isdir(get(hObject,'String')))
-inputFolderEdit = uigetdir(get(hObject,'String'));
+if(isdir(handles.processingFolderEdit.String))
+inputFolderEdit = uigetdir(handles.processingFolderEdit.String);
 else
 inputFolderEdit = uigetdir('');
 end
@@ -1021,8 +1021,8 @@ function resultOutputFolderBrowse_Callback(hObject, eventdata, handles)
 % hObject    handle to resultOutputFolderBrowse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if(isdir(get(hObject,'String')))
-    resultOutputFolder = uigetdir(get(hObject,'String'));
+if(isdir(handles.resultOutputFolderEdit.String))
+    resultOutputFolder = uigetdir(handles.resultOutputFolderEdit.String);
 else
     resultOutputFolder = uigetdir('');
 end
@@ -1345,8 +1345,8 @@ function stitchInputFolderBrowse_Callback(hObject, eventdata, handles)
 % hObject    handle to stitchInputFolderBrowse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if(isdir(get(hObject,'String')))
-stitchInputFolderEdit = uigetdir(get(hObject,'String'));
+if(isdir(handles.stitchInputFolderEdit.String))
+stitchInputFolderEdit = uigetdir(handles.stitchInputFolderEdit.String);
 else
 stitchInputFolderEdit = uigetdir('');
 end

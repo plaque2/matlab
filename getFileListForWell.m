@@ -14,7 +14,7 @@ end
 inputPattern = regexprep(inputPattern,regexptranslate('escape','(?<channelName>w[0-9]*)'),channelValue);
 
 
-
+inputFileList= naturalSort(inputFileList); %sort input filelist in natural order
 [outputFileList tokenNames] = regexp(inputFileList,inputPattern,'match','names');
  tokenNames = cell2mat(tokenNames');
 if (nargin == 3)
@@ -23,7 +23,7 @@ if (nargin == 3)
   wellCollumns =  (cellfun(@(currentCellEllement) currentCellEllement{1},wellCollumns, 'UniformOutput', false))';
 else
 wellRows  = wellRowValue; 
-wellCollumns = wellCollumnValue;
+
 end
 
    

@@ -69,6 +69,38 @@ manualMaskUIArray.autoScaleCheckBox = uicontrol('Style','checkbox',...
     'Parent',manualMaskUIArray.mainHandle,'BackgroundColor',[0.314 0.314 0.314],'ForegroundColor',[1 1 1],...
     'Units','pixels','Position',[170 7 150 12],'FontName','Arial','FontSize',8,'FontWeight','bold','String','Auto Scale Images','Value',1);
 
+
+
+ellipseMaskFace = imresize(imread('ellipseFace.tif'),[22 22]);
+rectMaskFace = imresize(imread('rectFace.tif'),[22 22]);
+polyMaskFace = imresize(imread('polyFace.tif'),[22 22]);
+%%%ELLIPTIC MASK
+manualMaskUIArray.ellipseBtn = uicontrol('Style', 'push',...
+    'Parent',manualMaskUIArray.mainHandle,...
+    'units','pixels',...
+    'position',[379 0 26 26],...
+    'CData',ellipseMaskFace,...
+    'Enable','off');
+
+%%%RECTANGULAR MASK
+manualMaskUIArray.rectBtn = uicontrol('Style', 'push',...
+    'Parent',manualMaskUIArray.mainHandle,...
+    'units','pixels',...
+    'position',[353 0 26 26],...
+    'CData',rectMaskFace,...
+    'Enable','off');
+
+%%%POLYGON MASK
+manualMaskUIArray.polyBtn = uicontrol('Style', 'push',...
+    'Parent',manualMaskUIArray.mainHandle,...
+    'units','pixels',...
+    'position',[327 0 26 26],...
+    'CData',polyMaskFace,...
+    'Enable','off');
+
+
+
+
 %%%GO TO WELL BUTTON
 manualMaskUIArray.goToWellBtn = uicontrol('Style', 'push',...
     'Parent',manualMaskUIArray.mainHandle,...
@@ -80,13 +112,15 @@ manualMaskUIArray.goToWellBtn = uicontrol('Style', 'push',...
     'ForegroundColor',[1 1 1],...
     'Callback',{@goToImage,manualMaskUIArray});
 
-
+set(manualMaskUIArray.ellipseBtn ,'Callback',{@createEllipse,manualMaskUIArray})
+set(manualMaskUIArray.polyBtn ,'Callback',{@createPoly,manualMaskUIArray})
+set(manualMaskUIArray.rectBtn ,'Callback',{@createRect,manualMaskUIArray})
 
 function wellRowCollumnCreateFcn(handle,event,manualMaskUIArray)
 params = getappdata(manualMaskUIArray.mainHandle,'params');
 
 try
-            
+    
     
     inputPath =  params.general.processingFolder;
     pattern  = params.general.fileNamePattern;
@@ -112,10 +146,10 @@ end
 function  goToImage(handle,event,manualMaskUIArray)
 params = getappdata(manualMaskUIArray.mainHandle,'params');
 
-        
-    pattern  = params.general.fileNamePattern;
-    channel = params.mask.selectedChannel;
-  
+
+pattern  = params.general.fileNamePattern;
+channel = params.mask.selectedChannel;
+
 
 parseOutput = getappdata(manualMaskUIArray.mainHandle,'parseOutput');
 rowStrings = get(manualMaskUIArray.wellRowPopup,'String');
@@ -138,11 +172,16 @@ if(autoScaleFlag)
 else
     imshow((im2uint8(currentImage)),'Parent',manualMaskUIArray.inputImageHolder);
 end
-title(manualMaskUIArray.inputImageHolder,'Double click to save','FontName','Arial','FontSize',16,'Color',[1 1 1]);
-createEllipse(manualMaskUIArray);
+title(manualMaskUIArray.inputImageHolder,'Select a masking shape','FontName','Arial','FontSize',16,'Color',[1 1 1]);
+manualMaskUIArray.ellipseBtn.Enable = 'on';
+manualMaskUIArray.rectBtn.Enable = 'on';
+manualMaskUIArray.polyBtn.Enable = 'on';
 
 
-function createEllipse(manualMaskUIArray)
+
+
+
+function createEllipse(handle,event,manualMaskUIArray)
 
 ellipseHandle = imellipse(manualMaskUIArray.inputImageHolder);
 wait(ellipseHandle);
@@ -159,24 +198,70 @@ if(~isempty(BW))
         disp('User selected Cancel');
     else
         disp(['User selected ',fullfile(pathname,filename)]);
-        imwrite(BW,fullfile(pathname,filename),'tif');      
+        imwrite(BW,fullfile(pathname,filename),'tif');
         set(getappdata(manualMaskUIArray.mainHandle,'parentMaskEditHandle'),'String',fullfile(pathname,filename));
     end
 end
 
- 
+
+
+function createPoly(handle,event,manualMaskUIArray)
+
+ellipseHandle = impoly(manualMaskUIArray.inputImageHolder);
+wait(ellipseHandle);
+
+BW = createMask(ellipseHandle);
+imshow(BW)
+title(manualMaskUIArray.inputImageHolder,'Mask to save','FontName','Arial','FontSize',16,'Color',[1 1 1]);
+maskFileName = [datestr(now,'yy_mm_dd') '_mask.tif'];
+
+if(~isempty(BW))
+    [filename, pathname] = uiputfile(maskFileName,...
+        'Save Image');
+    if isequal(filename,0) || isequal(pathname,0)
+        disp('User selected Cancel');
+    else
+        disp(['User selected ',fullfile(pathname,filename)]);
+        imwrite(BW,fullfile(pathname,filename),'tif');
+        set(getappdata(manualMaskUIArray.mainHandle,'parentMaskEditHandle'),'String',fullfile(pathname,filename));
+    end
+end
+
+
+function createRect(handle,event,manualMaskUIArray)
+
+ellipseHandle = imrect(manualMaskUIArray.inputImageHolder);
+wait(ellipseHandle);
+
+BW = createMask(ellipseHandle);
+imshow(BW)
+title(manualMaskUIArray.inputImageHolder,'Mask to save','FontName','Arial','FontSize',16,'Color',[1 1 1]);
+maskFileName = [datestr(now,'yy_mm_dd') '_mask.tif'];
+
+if(~isempty(BW))
+    [filename, pathname] = uiputfile(maskFileName,...
+        'Save Image');
+    if isequal(filename,0) || isequal(pathname,0)
+        disp('User selected Cancel');
+    else
+        disp(['User selected ',fullfile(pathname,filename)]);
+        imwrite(BW,fullfile(pathname,filename),'tif');
+        set(getappdata(manualMaskUIArray.mainHandle,'parentMaskEditHandle'),'String',fullfile(pathname,filename));
+    end
+end
+
 %     Plaque2.0 - a virological assay reloaded
 %     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
-% 
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
+%     the ree Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.

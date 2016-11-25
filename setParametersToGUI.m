@@ -26,7 +26,7 @@ set(handles.resultOutputFolderEdit,'String',parameters.general.resultOutputFolde
 %STITCH
 if ( parameters.general.stitchFlag)
     
-    set(handles.stitchFileNamePatternEdit,'String',parameters.stitch.fileNamePattern); 
+    set(handles.stitchFileNamePatternEdit,'String',parameters.stitch.fileNamePattern);
     set(handles.stitchInputFolderEdit,'String',parameters.stitch.inputFolder);
     set(handles.xImageNumberEdit,'String',parameters.stitch.xImageNumber);
     set(handles.yImageNumberEdit,'String',parameters.stitch.yImageNumber);
@@ -38,9 +38,17 @@ end
 if (parameters.general.maskFlag)
     
     
-%     set(handles.maskChannelPopup,'String',parameters.mask.selectedChannel);
-
-     switch parameters.mask.selectedMaskDefinitionMethod
+    %     set(handles.maskChannelPopup,'String',parameters.mask.selectedChannel);
+    parseOutput = parseImageFilenames(parameters.general.processingFolder,parameters.general.fileNamePattern);
+    
+    allChannels = parseOutput.channelNames;
+    
+    %     allChannels= get(handles.maskChannelPopup,'String');
+    selectedChannel = parameters.mask.selectedChannel;
+    ind = find(~cellfun(@isempty,strfind(allChannels,selectedChannel)));
+    set(handles.maskChannelPopup,'Value',ind);
+    
+    switch parameters.mask.selectedMaskDefinitionMethod
         
         case 'loadCustomMask'
             set(handles.maskMethodPopup,'Value',2);
@@ -57,21 +65,21 @@ if (parameters.general.maskFlag)
             set(handles.maskMethodPopup,'Value',1);
             
     end
-%     set(handles.maskMethodPopup,'Value',)
-%     switch get(handles.maskMethodPopup,'Value')
-%         
-%         case 'loadCustomMask'
-%               
-% %              parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
-%              set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
-%         case 'manualMaskDefinition'
-% %             parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
-% %             parameters.mask.customMaskFile = get(handles.customMaskFileEdit,'String');
-%         case 'automaticMaskDefinition';
-% %             parameters.mask.selectedMaskDefinitionMethod = 'automaticMaskDefinition';
-%             %%%%%ADD MASK DETECTED MASK FILE  PATH IF NOT THROW AN ERROR
-%     
-%     end
+    %     set(handles.maskMethodPopup,'Value',)
+    %     switch get(handles.maskMethodPopup,'Value')
+    %
+    %         case 'loadCustomMask'
+    %
+    % %              parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
+    %              set(handles.customMaskFileEdit,'String',parameters.mask.customMaskFile);
+    %         case 'manualMaskDefinition'
+    % %             parameters.mask.selectedMaskDefinitionMethod = 'manualMaskDefinition';
+    % %             parameters.mask.customMaskFile = get(handles.customMaskFileEdit,'String');
+    %         case 'automaticMaskDefinition';
+    % %             parameters.mask.selectedMaskDefinitionMethod = 'automaticMaskDefinition';
+    %             %%%%%ADD MASK DETECTED MASK FILE  PATH IF NOT THROW AN ERROR
+    %
+    %     end
     
 end
 
@@ -79,15 +87,22 @@ if (parameters.general.nucleiFlag)
     %NUCLEI
     set(handles.artifactThresholdEdit,'String',parameters.nuclei.artifactThreshold);
     
-%     set(handles.nucleiChannelPopup,'String',parameters.nuclei.selectedChannel);
-        
+    %     set(handles.nucleiChannelPopup,'String',parameters.nuclei.selectedChannel);
+    parseOutput = parseImageFilenames(parameters.general.processingFolder,parameters.general.fileNamePattern);
     
-    switch parameters.nuclei.selectedThresholdingMethod 
-                  
+    allChannels = parseOutput.channelNames;
+    
+    selectedChannel = parameters.nuclei.selectedChannel;
+    ind = find(~cellfun(@isempty,strfind(allChannels,selectedChannel)));
+    set(handles.nucleiChannelPopup,'Value',ind);
+    
+    
+    switch parameters.nuclei.selectedThresholdingMethod
+        
         case 'manualThresholding'
-           set(handles.manualThresholdEdit,'String',parameters.nuclei.manualThreshold);
+            set(handles.manualThresholdEdit,'String',parameters.nuclei.manualThreshold);
         case 'globalOtsuThresholding'
-           
+            
             set(handles.minimalThresholdEdit,'String',parameters.nuclei.minimalThreshold);
             set(handles.thresholdCorrectionFactorEdit,'String',parameters.nuclei.thresholdCorrectionFactor);
         case 'localOtsuThresholding'
@@ -96,8 +111,8 @@ if (parameters.general.nucleiFlag)
             
         otherwise
             %throw an error
-              %throw an error
-         
+            %throw an error
+            
     end
     
     set(handles.minCellAreaNucleiEdit,'String',parameters.nuclei.minCellArea);
@@ -105,10 +120,10 @@ if (parameters.general.nucleiFlag)
     
     if(parameters.nuclei.illuminationCorrectionFlag)
         set(handles.illuminationCorrectionFlag,'Value',parameters.nuclei.illuminationCorrectionFlag);
-       
+        
         set(handles.correctionBallRadiusEdit,'String',parameters.nuclei.correctionBallRadius);
     else
-         set(handles.illuminationCorrectionFlag,'Value',parameters.nuclei.illuminationCorrectionFlag);
+        set(handles.illuminationCorrectionFlag,'Value',parameters.nuclei.illuminationCorrectionFlag);
     end
 end
 
@@ -117,7 +132,13 @@ if (parameters.general.virusFlag)
     %VIRUS
     
     
-%     set(handles.virusChannelPopup,'String',parameters.virus.selectedChannel);
+    %     get(handles.virusChannelPopup,'String',parameters.virus.selectedChannel);
+    parseOutput = parseImageFilenames(parameters.general.processingFolder,parameters.general.fileNamePattern);
+    
+    allChannels = parseOutput.channelNames;
+    selectedChannel = parameters.virus.selectedChannel;
+    ind = find(~cellfun(@isempty,strfind(allChannels,selectedChannel)));
+    set(handles.virusChannelPopup,'Value',ind);
     
     set(handles.virusThresholdEdit,'String',parameters.virus.virusThreshold);
     set(handles.minPlaqueAreaEdit,'String',parameters.virus.minPlaqueArea);
@@ -125,16 +146,16 @@ if (parameters.general.virusFlag)
     
     
     set(handles.minCellAreaVirusEdit,'String',parameters.virus.minCellArea);
-   set(handles.maxCellAreaVirusEdit,'String',parameters.virus.maxCellArea);
+    set(handles.maxCellAreaVirusEdit,'String',parameters.virus.maxCellArea);
     
     
     if(parameters.virus.finePlaqueDetectionFlag)
         set(handles.plaqueFineDetectionFlag,'Value',parameters.virus.finePlaqueDetectionFlag);
-       set(handles.plaqueGaussianFilterSizeEdit,'String',parameters.virus.plaqueGaussianFilterSize );
+        set(handles.plaqueGaussianFilterSizeEdit,'String',parameters.virus.plaqueGaussianFilterSize );
         set(handles.plaqueGaussianFilterSigmaEdit,'String',parameters.virus.plaqueGaussianFilterSigma);
         set(handles.peakRegionSizeEdit,'String',parameters.virus.peakRegionSize);
     else
-       set(handles.plaqueFineDetectionFlag,'Value', parameters.virus.finePlaqueDetectionFlag);
+        set(handles.plaqueFineDetectionFlag,'Value', parameters.virus.finePlaqueDetectionFlag);
     end
 end
 

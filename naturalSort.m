@@ -1,54 +1,81 @@
-c = {'file1.txt'  'file10.txt' 'file24.txt' 'file2.txt'};
-% sort(testFileList)
+function [sortedCellArray,sortedIndex] = naturalSort(inputCellArray,sortMode)
+%sorts input cell array  in "natural" order taking into account the
+%numerical values inside the cell array ellements.
+
+% based on sort_nat written by Douglas M. Schwarz  https://uk.mathworks.com/matlabcentral/fileexchange/10959-sort-nat--natural-order-sort
+
+
+
+% Set default value for sortMode if necessary.
+ if nargin < 2
+ 	sortMode = 'ascending'; 
+ end
+
+% Make sure mode is either 'ascending' or 'ascending'
+sortModes = strcmpi(sortMode,{'ascending','descending'});
+
+
+
+if ~any(sortModes)
+	error('naturalsort:sortDirection',...
+ 		'sorting direction must be ''ascend'' or ''descend''.');
+end
+
+
+isDescending = sortModes(2);
+    
 
 % Replace runs of digits with '0'.
-c2 = regexprep(c,'\d+','0');
+tempCellArray = regexprep(inputCellArray,'\d+','0');
 
-% Compute char version of c2 and locations of zeros.
-s1 = char(c2);
-z = s1 == '0';
+% Compute the char version of inputCellArray and locations of zeros.
+charCellArray = char(tempCellArray);
+locationCellArray = charCellArray == '0';
+
+
 
 % Extract the runs of digits and their start and end indices.
-[digruns,first,last] = regexp(c,'\d+','match','start','end');
+[digits,firstIndices,lastIndices] = regexp(inputCellArray,'\d+','match','start','end');
 
 % Create matrix of numerical values of runs of digits and a matrix of the
 % number of digits in each run.
-num_str = length(c);
-max_len = size(s1,2);
-num_val = NaN(num_str,max_len);
-num_dig = NaN(num_str,max_len);
-for i = 1:num_str
-	num_val(i,z(i,:)) = sscanf(sprintf('%s ',digruns{i}{:}),'%f');
-	num_dig(i,z(i,:)) = last{i} - first{i} + 1;
+numberOfEllements = length(inputCellArray); 
+sizeOfMaxString = size(charCellArray,2);
+valueArray = NaN(numberOfEllements,sizeOfMaxString);
+digitArray = NaN(numberOfEllements,sizeOfMaxString);
+for i = 1:numberOfEllements
+	valueArray(i,locationCellArray(i,:)) = sscanf(sprintf('%s ',digits{i}{:}),'%f');
+	digitArray(i,locationCellArray(i,:)) = lastIndices{i} - firstIndices{i} + 1;
 end
 
-% Find columns that have at least one non-NaN.  Make sure activecols is a
-% 1-by-n vector even if n = 0.
-activecols = reshape(find(~all(isnan(num_val))),1,[]);
-n = length(activecols);
+% Find columns that have at least one non-NaN.  Make sure activeCollumns is a
+% 1-by-lengthOfActiveCollumns vector even if lengthOfActiveCollumns = 0.
+activeCollumns = reshape(find(~all(isnan(valueArray))),1,[]);
+lengthOfActiveCollumns = length(activeCollumns);
 
 % Compute which columns in the composite matrix get the numbers.
-numcols = activecols + (1:2:2*n);
+numberOfCollumns = activeCollumns + (1:2:2*lengthOfActiveCollumns);
 
 % Compute which columns in the composite matrix get the number of digits.
-ndigcols = numcols + 1;
+numberOfDigitCollumns = numberOfCollumns + 1;
 
 % Compute which columns in the composite matrix get chars.
-charcols = true(1,max_len + 2*n);
-charcols(numcols) = false;
-charcols(ndigcols) = false;
+charCollumns = true(1,sizeOfMaxString + 2*lengthOfActiveCollumns);
+charCollumns(numberOfCollumns) = false;
+charCollumns(numberOfDigitCollumns) = false;
 
-% Create and fill composite matrix, comp.
-comp = zeros(num_str,max_len + 2*n);
-comp(:,charcols) = double(s1);
-comp(:,numcols) = num_val(:,activecols);
-comp(:,ndigcols) = num_dig(:,activecols);
+% Create and fill composite matrix
+compositeMatrix = zeros(numberOfEllements,sizeOfMaxString + 2*lengthOfActiveCollumns);
+compositeMatrix(:,charCollumns) = double(charCellArray);
+compositeMatrix(:,numberOfCollumns) = valueArray(:,activeCollumns);
+compositeMatrix(:,numberOfDigitCollumns) = digitArray(:,activeCollumns);
 
-% Sort rows of composite matrix and use index to sort c in ascending or
-% descending order, depending on mode.
-[unused,index] = sortrows(comp);
-% if is_descend
-% 	index = index(end:-1:1);
-% end
-index = reshape(index,size(c));
-cs = c(index);
+% Sort rows of composite matrix and use index to sort c in ascending or descending order
+[unused,sortedIndex] = sortrows(compositeMatrix);
+if isDescending
+	sortedIndex = sortedIndex(end:-1:1);
+end
+sortedIndex = reshape(sortedIndex,size(inputCellArray));
+sortedCellArray = inputCellArray(sortedIndex);
+
+end

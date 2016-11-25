@@ -23,7 +23,7 @@ filteredDirs = allDirs(ind);
 
 % filteredDirs{1}
 
-   load('stitchingParams.mat');
+load('stitchingParams.mat');
  %load('Z:\Vardan_Andriasyan\Novartis\Wuxi3b\Results\16_02_02_parameters.mat');
 parameters.general.fileNamePattern = '(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*)';
 
@@ -32,7 +32,7 @@ parameters.general.fileNamePattern = '(?<wellName>[A-Z][0-9]*)_(?<channelName>w[
 resultOutputPath='Y:\Analysis\160613-Ackermann-titration\Results';
 % %   resultOutputPath='C:\Users\Vardan\Google Drive\!AY&VA\Novartis\results\run2_4dpi';
 mkdir(resultOutputPath);
-overviewSavePath = 'Y:\Analysis\160613-Ackermann-titration\Overviews';
+overviewSavePath = 'Y:\Analysis\160928-Ackermann-titration2\Overviews';
 %  overviewSavePath = 'C:\Users\Vardan\Google Drive\!AY&VA\Novartis\overviews\run2';
 mkdir(overviewSavePath);
 % overviewFolder='D:\Vardan\131108drugscreen\Overviews';
@@ -56,9 +56,10 @@ parfor i=1:length(filteredDirs)
     % 141215-NovRun3-p1-4dpi_Plate_1257
     % 140214-Novartis-plate1-1-1dpi_Plate_423
     %RUN1 151014-Ackerman-20x-batch1-p3_Plate_1805
-    %ind = regexp(curPath,'[0-9]*-VA-Wuxi3b-\w*-plq-3dpi_Plate_[0-9]*','match');
-    ind = regexp(curPath,'160613-Ackermann-titration-\w*-\w*-[0-9]*hpi_Plate_[0-9]*','match');
-    ind = regexp(curPath,'160613-Ackermann-titration-dTK-GCV-48hpi_Plate_[0-9]*','match');
+%     160928-Ackermann-titration-dTk-GCV_Plate_3262
+    ind = regexp(curPath,'[0-9]*-Ackermann-titration-\w*-\w*_Plate_[0-9]*','match');
+%     ind = regexp(curPath,'160613-Ackermann-titration-\w*-\w*-[0-9]*hpi_Plate_[0-9]*','match');
+%     ind = regexp(curPath,'160613-Ackermann-titration-dTK-GCV-48hpi_Plate_[0-9]*','match');
 %      ind = regexp(curPath,'160613-Ackermann-titration-dTK-GCV-24hpi_Plate_2761','match');
     %RUN2
     % 140925-Novartis-Batch2-Run2-1-1-4dpi_Plate_1107
@@ -86,19 +87,20 @@ parfor i=1:length(filteredDirs)
     % numberOfPlates=numberOfPlates+1;
     % % disp(ind);
     % end
-    if  ~isempty(ind)
-        numberOfPlates=numberOfPlates+1;
-        curPlatename = cell2mat(unique(ind));
-        % curPlatename = ['T' num2str(i)];
-        disp(curPlatename)
-%         plaque2(parameters,curPlatename, curPath,[curPath filesep 'Stitched'],resultOutputPath);
+     if  ~isempty(ind)
+         numberOfPlates=numberOfPlates+1;
+         curPlatename = cell2mat(unique(ind));
+%          curPlatename = ['T' num2str(i)];
+%          curPlatename='pV';
+         disp(curPlatename)
+%          plaque2(parameters,curPlatename, curPath,[curPath filesep 'Stitched'],resultOutputPath);
         
-        scalingFactor=0.1;
-        removeStitchFolderFlag =0;
-        pattern = '.*(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*).TIF';
-        generateOverviews([curPath filesep 'Stitched'],curPlatename,pattern,overviewSavePath,scalingFactor,removeStitchFolderFlag);
+          scalingFactor=0.3;
+          removeStitchFolderFlag =0;
+          pattern = '.*(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*).TIF';
+          generateOverviews([curPath filesep 'Stitched'],curPlatename,pattern,overviewSavePath,scalingFactor,removeStitchFolderFlag);
         
-    end
+     end
     
     
 end
