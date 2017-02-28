@@ -1,4 +1,5 @@
-% Artur Yakimovich University of Zurich. Copyright (C) 2012. Simple No-overlap-stitichng Function.
+% Artur Yakimovich and Vardan Andriasyan
+% University of Zurich. Copyright (C) 2012. Simple No-overlap-stitichng Function.
 function  output = stitchsites(parameters,testWellSitesFilenames)
 
 if nargin <1
@@ -57,7 +58,7 @@ if(~testMode)
                     error('STITCH:AbortedByUser','Aborted by User');
                     end
                 end
-                
+                disp([parseOutput.wellRows{iRow},parseOutput.wellCollumns{iCollumn},parseOutput.channelNames{iChannel}]);
                 if (length(outputFileList) ~=xNumber*yNumber)
                     error('Stitch:DimensionMismatch','Incorrect number of images to be stitched');
                 end

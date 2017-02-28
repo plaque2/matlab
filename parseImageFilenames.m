@@ -13,24 +13,25 @@ if(validFileNameIndexes)
     matchedFileNames= [allFileNames(validFileNameIndexes)]';
     tokenNames = cell2mat(tokenNames');
     
-    parseOutput.matchedFileNames = matchedFileNames;
+    parseOutput.matchedFileNames = naturalSort(matchedFileNames);
     
-    if(isfield(tokenNames,'wellName'))
+if(isfield(tokenNames,'wellName'))
         
         [wellCollumns wellRows]  = regexp({tokenNames.wellName},'\d+','match','split');
         
         parseOutput.wellRows = unique(cellfun(@(currentCellEllement) currentCellEllement{1},wellRows, 'UniformOutput', false));
         parseOutput.wellCollumns =  unique(cellfun(@(currentCellEllement) currentCellEllement{1},wellCollumns, 'UniformOutput', false));
         
-    end
+end
+    
     
     
     if(isfield(tokenNames,'siteName'))
-        parseOutput.siteNames  = unique({tokenNames.siteName});
+        parseOutput.siteNames  = naturalSort(unique({tokenNames.siteName}));
         
     end
     if(isfield(tokenNames,'channelName'))
-        parseOutput.channelNames  = unique({tokenNames.channelName});
+        parseOutput.channelNames  = naturalSort(unique({tokenNames.channelName}));
     end
     
 else

@@ -7,11 +7,11 @@ elseif (nargin == 5)
      wellRowValue = varargin{1};
      wellCollumnValue = varargin{2};
      channelValue = varargin{3};
-     inputPattern = regexprep(inputPattern,regexptranslate('escape','(?<wellName>[A-Z][0-9]*)'),[wellRowValue wellCollumnValue]);
+     inputPattern = regexprep(inputPattern,'\(\?<wellName>[^\(]+\)',[wellRowValue wellCollumnValue]);
 else
    error('NotEnoughInputArguments','Not enough input arguments'); 
 end
-inputPattern = regexprep(inputPattern,regexptranslate('escape','(?<channelName>w[0-9]*)'),channelValue);
+inputPattern = regexprep(inputPattern,'\(\?<channelName>[^\(]+\)',channelValue);
 
 
 inputFileList= naturalSort(inputFileList); %sort input filelist in natural order

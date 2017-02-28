@@ -19,7 +19,7 @@ function varargout = plaque2GUIpc(varargin)
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
-
+ 
 % Edit the above text to modify the response to help plaque2GUIpc
 
 % Last Modified by GUIDE v2.5 17-Nov-2014 12:25:00
@@ -118,13 +118,13 @@ set(hObject,'Position',[100 432 950 750]);
 function varargout = plaque2GUIpc_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% eventdata  reserved - to be defined in a future version of MATLAB 
+set(handles.stitchTab,'Value',1);
+set(handles.maskTab,'Value',0);
+set(handles.nucleiTab,'Value',0);
+set(handles.virusTab,'Value',0);
 
-% Get default command line output from handles structure
-varargout{1} = handles.output;
 
-% --- Executes on button press in stitchTab.
 function stitchTab_Callback(hObject, eventdata, handles)
 % hObject    handle to stitchTab (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -143,10 +143,6 @@ set(handles.stitchTab,'Value',1);
 set(handles.maskTab,'Value',0);
 set(handles.nucleiTab,'Value',0);
 set(handles.virusTab,'Value',0);
-
-
-
-
 
 % --- Executes on button press in maskTab.
 function maskTab_Callback(hObject, eventdata, handles)

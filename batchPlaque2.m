@@ -3,7 +3,7 @@ clear
 
 % % CHANGE THE INPUT FOLDER HERE
 % output = evalc('system(''dir Z:\Vardan_Andriasyan\Novartis\Wuxi3b /ad /b /s'')');
-output = evalc('system(''dir Y:\ /ad /b /s'')');
+output = evalc('system(''dir Z:\Vardan_Andriasyan\Clusters\TimeCourse_pV\170206-VA-PV-timelapse /ad /b /s'')');
 %  output = evalc('system(''dir D:\Novartis\run2_4dpi /ad /b /s'')');
 %  output = evalc('system(''dir D:\Novartis\run4_4dpi /ad /b /s'')');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,14 +25,18 @@ filteredDirs = allDirs(ind);
 
 load('stitchingParams.mat');
  %load('Z:\Vardan_Andriasyan\Novartis\Wuxi3b\Results\16_02_02_parameters.mat');
-parameters.general.fileNamePattern = '(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*)';
+ %[A-Z][0-9]*)
+parameters.general.fileNamePattern = '(?<wellName>[BCDEFG][0][78])_(?<channelName>w[0-9]*)';
+parameters.stitch.fileNamePattern = '(?<wellName>[BCDEFG][0][78])_(?<siteName>s[0-9]*)_(?<channelName>w[0-9]*)_thumb.tif';
+parameters.stitch.yImageNumber = 8;
+parameters.stitch.xImageNumber = 8;
 
 % SPECIFY THE OUTPUT FOR THE EXCELL FILES HERE
 %C:\Users\Vardan\Google Drive\!AY&VA\Novartis\results\run1_4dpi
-resultOutputPath='Y:\Analysis\160613-Ackermann-titration\Results';
+resultOutputPath='Z:\Vardan_Andriasyan\Clusters\TimeCourse_pV\170206-VA-PV-timelapse\Results';
 % %   resultOutputPath='C:\Users\Vardan\Google Drive\!AY&VA\Novartis\results\run2_4dpi';
 mkdir(resultOutputPath);
-overviewSavePath = 'Y:\Analysis\160928-Ackermann-titration2\Overviews';
+overviewSavePath = 'Z:\Vardan_Andriasyan\Clusters\TimeCourse_pV\170206-VA-PV-timelapse\Overviews';
 %  overviewSavePath = 'C:\Users\Vardan\Google Drive\!AY&VA\Novartis\overviews\run2';
 mkdir(overviewSavePath);
 % overviewFolder='D:\Vardan\131108drugscreen\Overviews';
@@ -51,62 +55,28 @@ parfor i=1:length(filteredDirs)
     %   disp(curPath);
     %ADV
     % % ind = regexp(curPath,'[0-9]*-Novartis-\w*-[0-9]-[0-9]dpi_\w*_[0-9]*','match');
-    % 140925-Novartis-Batch2-Run2-1-1-4dpi_Plate_1107
-    % ind = regexp(curPath,'[0-9]*-Novartis-p[0-9]_Plate_[0-9]*','match');
-    % 141215-NovRun3-p1-4dpi_Plate_1257
-    % 140214-Novartis-plate1-1-1dpi_Plate_423
-    %RUN1 151014-Ackerman-20x-batch1-p3_Plate_1805
-%     160928-Ackermann-titration-dTk-GCV_Plate_3262
-    ind = regexp(curPath,'[0-9]*-Ackermann-titration-\w*-\w*_Plate_[0-9]*','match');
-%     ind = regexp(curPath,'160613-Ackermann-titration-\w*-\w*-[0-9]*hpi_Plate_[0-9]*','match');
-%     ind = regexp(curPath,'160613-Ackermann-titration-dTK-GCV-48hpi_Plate_[0-9]*','match');
-%      ind = regexp(curPath,'160613-Ackermann-titration-dTK-GCV-24hpi_Plate_2761','match');
-    %RUN2
-    % 140925-Novartis-Batch2-Run2-1-1-4dpi_Plate_1107
-    % ind = regexp(curPath,'[0-9]*-Novartis-Batch2-Run2-[0-9]-[0-9]-4dpi_\w*_[0-9]*','match');
+   
     
-    % ind = regexp(curPath,'[0-9]*-NovRun3-p[0-9]-4dpi_Plate_[0-9]*','match');
-    % ind = regexp(curPath,'[0-9]*-NovRun3-p[0-9]-4dpi_Plate_[0-9]*','match');
-    % VACV
-    %1400202-VACV-ara-C-H-p1_Plate_377
-    
-    %%%%%%%%%%%% CHANGE THE REGEXP FOR THE PLATE NAMES
-    % 140809-PMP-FreezeThawInfectEtOh-1dpi_Plate_979
-    % 140813-FreezeThaw-GCA-p1-1dpi_Plate_1004
-    %140911-HKF-on-WI38-1hps-reseeding-p1_Plate_1074
-    %140925-Novartis-Batch2-Run2-1-1-4dpi_Plate_1107
-    %141001-HAdV3-CellLibraryInfection-1-1dpi_Plate_1126
-    %14-09-30-Demonstration-Plate-4X-2_Plate_1120
-    %14-10-03-Demonstration-PlateReimage-1-4X_Plate_1141
-    %D:\Vardan\BIO321\14-10-03-CellLibrary-fixed4X-1-4dpi_Plate_1147
-    %  ind = regexp(curPath,'[0-9]*-[0-9]*-[0-9]*-CellLibrary-fixed4X-[0-9]-[0-9]dpi_Plate_[0-9]*','match');
-    %141002-HAdV3-CellLibrary-1-2dpi_Plate_1132
-    %130216-AY-JM-VACV-spread-TC-4x_Plate_10
-    %  ind = regexp(curPath,'130216-AY-JM-VACV-spread-TC-4x_Plate_10','match');
-    % if ~isempty(ind)
-    % numberOfPlates=numberOfPlates+1;
-    % % disp(ind);
-    % end
-     if  ~isempty(ind)
-         numberOfPlates=numberOfPlates+1;
-         curPlatename = cell2mat(unique(ind));
-%          curPlatename = ['T' num2str(i)];
+%      if  ~isempty(ind)
+%          numberOfPlates=numberOfPlates+1;
+%          curPlatename = cell2mat(unique(ind));
+         curPlatename = ['T' num2str(i)];
 %          curPlatename='pV';
          disp(curPlatename)
-%          plaque2(parameters,curPlatename, curPath,[curPath filesep 'Stitched'],resultOutputPath);
+         plaque2(parameters,curPlatename, curPath,[curPath filesep 'Stitched'],resultOutputPath);
         
-          scalingFactor=0.3;
+          scalingFactor=1;
           removeStitchFolderFlag =0;
-          pattern = '.*(?<wellName>[A-Z][0-9]*)_(?<channelName>w[0-9]*).TIF';
-          generateOverviews([curPath filesep 'Stitched'],curPlatename,pattern,overviewSavePath,scalingFactor,removeStitchFolderFlag);
+          pattern = '.*(?<wellName>[BCDEFG][0][78])_(?<channelName>w[0-9]*).TIF';
+        generateOverviews([curPath filesep 'Stitched'],curPlatename,pattern,overviewSavePath,scalingFactor,removeStitchFolderFlag);
         
-     end
+%      end
     
     
 end
 
 
-% %
+% % n 
 
 %     Plaque2.0 - a virological assay reloaded
 %     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
