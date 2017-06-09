@@ -34,41 +34,38 @@ if(~testMode)
     try
         matchedFileNames = parseOutput.matchedFileNames;
         if(isfield(parseOutput,'channelNames'));
-        numberOfChannels = length(parseOutput.channelNames);
+            numberOfChannels = length(parseOutput.channelNames);
         else
-         numberOfChannels=1;
+            numberOfChannels=1;
         end
-        numberOfRows =length(parseOutput.wellRows);
-        numberOfCollumns =length(parseOutput.wellCollumns);
+        numberOfWells =length(parseOutput.wellName);
     catch errorMsg
         
         error('Stitch:ParseError','Can not parse images with the current pattern');
         
     end
+    
     for iChannel= 1:numberOfChannels
-        for iRow = 1:numberOfRows
-            for iCollumn = 1:numberOfCollumns
-                
-                
-                outputFileList=  getFileListForWell(matchedFileNames,filenamePattern,parseOutput.wellRows{iRow},parseOutput.wellCollumns{iCollumn},parseOutput.channelNames{iChannel});
-                %Check if aborted by user from GUI
-                if isappdata(0,'isAnalysisRunning')
-                    drawnow;
-                    if (getappdata(0,'isAnalysisRunning')==0)
+        for iWell = 1:numberOfWells
+            
+            outputFileList=  getFileListForWell(matchedFileNames,filenamePattern,parseOutput.wellName{iWell},parseOutput.channelNames{iChannel});
+            %Check if aborted by user from GUI
+            if isappdata(0,'isAnalysisRunning')
+                drawnow;
+                if (getappdata(0,'isAnalysisRunning')==0)
                     error('STITCH:AbortedByUser','Aborted by User');
-                    end
                 end
-                disp([parseOutput.wellRows{iRow},parseOutput.wellCollumns{iCollumn},parseOutput.channelNames{iChannel}]);
-                if (length(outputFileList) ~=xNumber*yNumber)
-                    error('Stitch:DimensionMismatch','Incorrect number of images to be stitched');
-                end
-                    
-                currentWellImage = stitchWell(fullfile(inputFolder,outputFileList),xNumber,yNumber);
-                output = 'Succesfully stitched';
-                
-                imwrite(currentWellImage,fullfile(saveFolder,[parseOutput.wellRows{iRow} parseOutput.wellCollumns{iCollumn} '_' parseOutput.channelNames{iChannel} '.TIF']));
-             
             end
+            
+            if (length(outputFileList) ~=xNumber*yNumber)
+                error('Stitch:DimensionMismatch','Incorrect number of images to be stitched');
+            end
+            
+            currentWellImage = stitchWell(fullfile(inputFolder,outputFileList),xNumber,yNumber);
+            output = 'Succesfully stitched';
+            
+            imwrite(currentWellImage,fullfile(saveFolder,[parseOutput.wellName{iWell} '_' parseOutput.channelNames{iChannel} '.TIF']));
+            
         end
     end
     
