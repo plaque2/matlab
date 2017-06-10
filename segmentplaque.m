@@ -25,7 +25,7 @@ end
 
 correctionBallRadius = 30; 
 
-bcg = imopen((processedImage),strel('ball',correctionBallRadius,correctionBallRadius));
+bcg = imopen((inputImage),strel('ball',correctionBallRadius,correctionBallRadius));
 
 inputImage = inputImage - bcg;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
