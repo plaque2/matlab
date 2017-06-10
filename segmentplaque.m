@@ -21,6 +21,16 @@ end
 % inputImage = imgaussfilt(inputImage,10)-bcg;%(inputImage-bcg);
 % imshow(imgaussfilt(inputImage,50)-bcg,[]);
 %  inputImage = adapthisteq(im2uint8(inputImage),'Distribution','rayleigh','Alpha',0.8);
+%%%%%%%%%%%%%%%%%%%%%%%%%ROLLING BALL%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+correctionBallRadius = 30; 
+
+bcg = imopen((processedImage),strel('ball',correctionBallRadius,correctionBallRadius));
+
+inputImage = inputImage - bcg;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 BW = im2bw(inputImage,virusThreshold);
 %mask = imread('Y:\Analysis\160329-Nelli-plates-1-3\16_05_23_mask_p2.tif');
 %  BW = (imbinarize((inputImage),'adaptive','Sensitivity',virusThreshold,'ForegroundPolarity','dark'));

@@ -3,7 +3,7 @@ clear
 
 % % CHANGE THE INPUT FOLDER HERE
 % output = evalc('system(''dir Z:\Vardan_Andriasyan\Novartis\Wuxi3b /ad /b /s'')');
-output = evalc('system(''dir Z:\Vardan_Andriasyan\Clusters\TimeCourse_pV\170206-VA-PV-timelapse /ad /b /s'')');
+output = evalc('system(''dir W:\Fanny_Georgi\9-1_VirusSpread\20170516_9-1-1_SpreadQuantification/ad /b /s'')');
 %  output = evalc('system(''dir D:\Novartis\run2_4dpi /ad /b /s'')');
 %  output = evalc('system(''dir D:\Novartis\run4_4dpi /ad /b /s'')');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
