@@ -31,6 +31,21 @@ if nargin == 5
     
 end
 
+%Batch processing with selected wells only
+if nargin == 6
+    
+    
+    
+    parameters.general.plateName = varargin{2};
+    parameters.stitch.inputFolder = varargin{3};
+    parameters.general.processingFolder = varargin{4} ;
+    parameters.general.resultOutputFolder =  varargin{5};
+    parameters.general.fileNamePattern = varargin{6};
+    
+    
+    
+end
+
 
 % disp('Starting...');
 
