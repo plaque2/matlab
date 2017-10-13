@@ -302,7 +302,7 @@ if(nucleiFlag|| virusFlag)
             ImageDataArray(currentImageIndex).maxVirusIntensity = max(currentVirusImage(:));
             ImageDataArray(currentImageIndex).totalVirusIntensity = sum(currentVirusImage(:));
             ImageDataArray(currentImageIndex).meanVirusIntensity = mean(currentVirusImage(:));
-            
+            ImageDataArray(currentImageIndex).medianVirusIntensity = median(currentVirusImage(:));
             [numberOfPlaques,plaqueProperties,virusBWImage,peakCoordinates,filteredLabeledBW] =  segmentplaque(currentVirusImage,parameters.virus);
             
          
