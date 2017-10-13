@@ -20,24 +20,24 @@
 library(stringr)
 
 # User input
-plaqueOutputFile <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/170206-AntiVir-confirm-p13_Plate_3716_ImageData.csv'
-layoutFile <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Layouts/Est_p13_vHAdV_d4e6.csv'
+plaqueOutputFile <- 'N:/antivir_screen/6-prestwick/6-6_rhino_Bafilomycin/Results/170111-AntiVir-BAF-RV-titration_Plate_3663_ImageData.csv'
+layoutFile <- 'N:/antivir_screen/6-prestwick/6-6_rhino_Bafilomycin/Layouts/BafA_p1_vHRV_d14e5.csv'
 plateName = str_match(plaqueOutputFile, '(^.*/(.+)_ImageData.csv$)')[,3]
 head(plateName)
-virusName = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,4]
+virusName = str_match(layoutFile, '(^.*/BafA_p(.+)_v(.+)_d(.+).csv$)')[,4]
 head(virusName)
-virusDilution = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,5]
+virusDilution = str_match(layoutFile, '(^.*/BafA_p(.+)_v(.+)_d(.+).csv$)')[,5]
 head(virusDilution)
-establishmentPlateNumber = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,3]
+establishmentPlateNumber = str_match(layoutFile, '(^.*/BafA_p(.+)_v(.+)_d(.+).csv$)')[,3]
 head(establishmentPlateNumber)
-imagingPlateNumber = str_match(plaqueOutputFile, '(^.*/170206-AntiVir-confirm-p13_Plate_(.+)_ImageData.csv$)')[,3]
+imagingPlateNumber = str_match(plaqueOutputFile, '(^.*/170111-AntiVir-BAF-RV-titration_Plate_(.+)_ImageData.csv$)')[,3]
 head(imagingPlateNumber)
 
 # Output setup
-plotTitle = 'HAdV (1:4,000,000), 3 dpi on A549 ATCC'
-outputPlotDirectory <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/postprocessed/Graphs/' 
+plotTitle = 'HRV (1:1,400,000), 2 dpi on HOG'
+outputPlotDirectory <- 'N:/antivir_screen/6-prestwick/6-6_rhino_Bafilomycin/Results/postprocessed/Graphs/' 
 outputPlotNameBase <- paste(virusName, virusDilution, sep="_")
-outputAnalysisDirectory <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/postprocessed/'
+outputAnalysisDirectory <- 'N:/antivir_screen/6-prestwick/6-6_rhino_Bafilomycin/Results/postprocessed/'
 
 # Data input
 plaqueOut <- read.csv(plaqueOutputFile)
@@ -63,8 +63,8 @@ head(plaqueOut)
 
 # Reorder and rename drugs for ploting
 unique(plaqueOut$drug)
-plaqueOut$drug <- factor(plaqueOut$drug, levels=c('mock', 'dmso', 'meoh', 'arac', 'dft', 'baf', 'nicl', 'brefa'))
-levels(plaqueOut$drug) <- c('Mock', 'DMSO', 'MeOH', 'ara-C', 'DFT', 'Baf', 'Nicl', 'BrefA')
+plaqueOut$drug <- factor(plaqueOut$drug, levels=c('PBS', 'DMSO','baf'))
+levels(plaqueOut$drug) <- c('Mock', 'DMSO', 'Baf')
 
 # # log10 concentrations
 # plaqueOut$logConc = 0
@@ -88,64 +88,52 @@ plaqueOut_noninfected <- plaqueOut[plaqueOut$virus=='non-infected',]
 
 ## Solvent toxicity
 
-# create dataset solvents for convenient calculations, where only Mock, DMSO 0.1 and MeOH 0.1 are included
-plaqueOut_solvents <- plaqueOut_noninfected[plaqueOut_noninfected$drug %in% c('Mock', 'DMSO', 'MeOH') & plaqueOut_noninfected$conc != 0.01 ,]
+# create dataset solvents for convenient calculations, where only Mock and DMSO 0.16 are included
+plaqueOut_solvents <- plaqueOut_noninfected[plaqueOut_noninfected$drug %in% c('Mock', 'DMSO') ,]
 # Create dataset drugs
-plaqueOut_drugs <- plaqueOut_noninfected[plaqueOut_noninfected$drug %in% c('ara-C', 'DFT', 'Baf', 'Nicl', 'BrefA') ,]
+plaqueOut_drugs <- plaqueOut_noninfected[plaqueOut_noninfected$drug %in% c('Baf') ,]
 # normalize cell numbers in solvent controls by mock
 plaqueOut_solvents$normMockRelNuclei <- plaqueOut_solvents$numberOfNuclei/mean(plaqueOut_solvents[plaqueOut_solvents$drug=='Mock', 'numberOfNuclei'])
 # Calculate mean tox of solvents
 toxDMSOMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='DMSO', 'normMockRelNuclei'])
 toxDMSOStd = sd(plaqueOut_solvents[plaqueOut_solvents$drug=='DMSO', 'normMockRelNuclei'])
-toxMeOHMMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='MeOH', 'normMockRelNuclei'])
-toxMeOHStd = sd(plaqueOut_solvents[plaqueOut_solvents$drug=='MeOH', 'normMockRelNuclei'])
 nucleiDMSOMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='DMSO', 'numberOfNuclei'])
-nucleiMeOHMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='MeOH', 'numberOfNuclei'])
 infectedDMSOMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='DMSO', 'numberOfInfectedNuclei'])
-infectedMeOHMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='MeOH', 'numberOfInfectedNuclei'])
 plaquesDMSOMean = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='DMSO', 'numberOfPlaques'])
-plaquesMeOHMeann = mean(plaqueOut_solvents[plaqueOut_solvents$drug=='MeOH', 'numberOfPlaques'])
 
 ## Drug toxicity normalized to solvent
 
 # Normalize non-infected treated numberOfNuclei by corresponding solvents
 plaqueOut_drugs$normSolventRelNuclei <- Inf
-plaqueOut_drugs[plaqueOut_drugs$drug!='BrefA', 'normSolventRelNuclei'] <- plaqueOut_drugs[plaqueOut_drugs$drug!='BrefA', 'numberOfNuclei']/ nucleiDMSOMean
-plaqueOut_drugs[plaqueOut_drugs$drug=='BrefA', 'normSolventRelNuclei'] <- plaqueOut_drugs[plaqueOut_drugs$drug=='BrefA', 'numberOfNuclei']/nucleiMeOHMean
+plaqueOut_drugs[plaqueOut_drugs$drug=='Baf', 'normSolventRelNuclei'] <- plaqueOut_drugs[plaqueOut_drugs$drug=='Baf', 'numberOfNuclei']/nucleiDMSOMean
 
 ## Solvent effect on infection
 
-# create dataset solvents for convenient calculations, where only Mock, DMSO 0.1 and MeOH 0.1 are included
-plaqueOut_solventsInfected <- plaqueOut_infected[plaqueOut_infected$drug %in% c('Mock', 'DMSO', 'MeOH') & plaqueOut_infected$conc != 0.01 ,]
+# create dataset solvents for convenient calculations, where only Mock and DMSO 0.16 are included
+plaqueOut_solventsInfected <- plaqueOut_infected[plaqueOut_infected$drug %in% c('Mock', 'DMSO') ,]
 # Normalize number of infected cells in solvent wells to infected Mock
 plaqueOut_solventsInfected$normMockRelInfectedNuclei <- plaqueOut_solventsInfected$numberOfInfectedNuclei/mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='Mock', 'numberOfInfectedNuclei'])
 # Calculate means etc.
 nucleiInfectedMockMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='Mock', 'numberOfNuclei'])
 nucleiInfectedDMSOMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='DMSO', 'numberOfNuclei'])
-nucleiInfectedMeOHMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='MeOH', 'numberOfNuclei'])
 infectedInfectedMockMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='Mock', 'numberOfInfectedNuclei'])
 infectedInfectedDMSOMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='DMSO', 'numberOfInfectedNuclei'])
-infectedInfectedMeOHMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='MeOH', 'numberOfInfectedNuclei'])
 plaquesInfectedMockMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug== 'Mock', 'numberOfPlaques'])
 plaquesInfectedDMSOMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='DMSO', 'numberOfPlaques'])
-plaquesInfectedMeOHMean = mean(plaqueOut_solventsInfected[plaqueOut_solventsInfected$drug=='MeOH', 'numberOfPlaques'])
 
 ## Drug effects on infection normalized to solvent
 
 # Create dataset drugsInfected
-plaqueOut_drugsInfected <- plaqueOut_infected[plaqueOut_infected$drug %in% c('ara-C', 'DFT', 'Baf', 'Nicl', 'BrefA') ,]
+plaqueOut_drugsInfected <- plaqueOut_infected[plaqueOut_infected$drug %in% c('Baf') ,]
 # Normalize infected treated numberOfNuclei by corresponding solvents
 plaqueOut_drugsInfected$normSolventRelNuclei <- Inf
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'normSolventRelNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'numberOfNuclei']/ nucleiInfectedDMSOMean
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'normSolventRelNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'numberOfNuclei']/nucleiInfectedMeOHMean
+plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'normSolventRelNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'numberOfNuclei']/nucleiInfectedDMSOMean
 # Normalize infected treated numberOfInfectedNuclei by corresponding solvents
 plaqueOut_drugsInfected$normSolventRelInfectedNuclei <- Inf
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'normSolventRelInfectedNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'numberOfInfectedNuclei']/ infectedInfectedDMSOMean
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'normSolventRelInfectedNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'numberOfInfectedNuclei']/infectedInfectedMeOHMean
+plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'normSolventRelInfectedNuclei'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'numberOfInfectedNuclei']/infectedInfectedDMSOMean
 # Normalize infected treated numberOfPlaques by corresponding solvents
 plaqueOut_drugsInfected$normSolventRelPlaques <- Inf
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'normSolventRelPlaques'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug!='BrefA', 'numberOfPlaques']/ plaquesInfectedDMSOMean
-plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'normSolventRelPlaques'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='BrefA', 'numberOfPlaques']/plaquesInfectedMeOHMean
+plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'normSolventRelPlaques'] <- plaqueOut_drugsInfected[plaqueOut_drugsInfected$drug=='Baf', 'numberOfPlaques']/plaquesInfectedDMSOMean
 
 # Calculate infection index
 plaqueOut_drugsInfected$relInfected <- plaqueOut_drugsInfected$numberOfInfectedNuclei/plaqueOut_drugsInfected$numberOfNuclei
@@ -174,6 +162,7 @@ plaqueOut_infected$normRelInfected <- plaqueOut_infected$relInfected/mean(plaque
 plaqueOut_infected$normRelNuclei <- plaqueOut_infected$numberOfNuclei/mean(plaqueOut_noninfected[plaqueOut_noninfected$drug=='Mock', 'numberOfNuclei']) 
 # Number of Plaques normalized to mean Mock number of plaques = non-treated, infected
 plaqueOut_infected$normRelPlaques <- plaqueOut_infected$numberOfPlaques/mean(plaqueOut_infected[plaqueOut_infected$drug=='Mock', 'numberOfPlaques'])
+do.call(data.frame,lapply(plaqueOut_infected, function(x) replace(x, is.infinite(x),NA)))
 
 
 # Export ----------------------------------------------------------------------------------------------------------------------------------
@@ -344,6 +333,27 @@ ggplot(plaqueOut_infected, aes(x=conc, y=relInfected))+
   theme(strip.text=element_text(angle=90, vjust = 0)) # turn drugs 90 degrees
 ggsave(paste(outputPlotDirectory, outputPlotNameBase, '_InfInd.png', sep=''), width=15, height=10, units='cm', dpi=1200)
 
+############################
+# cell numbers dependant on durg, solvent in non-infected
+ggplot(plaqueOut, aes(y=numberOfNuclei, x=conc))+
+  geom_jitter(width=0.2, col='#0066cc')+
+  facet_grid(.~drug, scales='free_x', space = 'free_x')+
+  ylab('Number of Nuclei\n')+
+  xlab('\nConcentration [uM]')+
+  scale_colour_discrete(name='Compound\nConcentration')+
+  scale_y_continuous(labels=comma)+
+  geom_errorbar(stat='summary', fun.y='mean', width=0.6, aes(ymax=..y..,ymin=..y..), position=position_dodge(width=1.2), size=1, colour='blue')+
+  theme_bw()+
+  theme(strip.background=element_blank(), axis.text.x=element_text(angle=45, hjust=1))+
+  theme(axis.title.y=element_text(colour='blue'), axis.text.y=element_text(colour='blue'))+ 
+  labs(title = plotTitle) + 
+  theme(panel.grid.minor.x=element_blank(), panel.grid.major.x=element_blank())+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(strip.text=element_text(angle=90, vjust = 0))+
+  geom_hline(yintercept = 0.8, col='darkgrey')
+ggsave(paste(outputPlotDirectory, outputPlotNameBase, '_Nuclei_non-inf.png', sep=''), width=11, height=10, units='cm', dpi=1200)
+
+#### ??????????? Cell count odd, non-infected infected
 # double y axis plot - infection index separated infected and non-infecetd: facet_grid(virus~drug, ...
 plaqueOut['fudgeTotal'] <- CalcFudgeAxis(y1=plaqueOut$relInfected, y2=plaqueOut$numberOfNuclei)$yf
 ggplot(plaqueOut, aes(x=conc, y=relInfected))+
@@ -363,6 +373,9 @@ ggplot(plaqueOut, aes(x=conc, y=relInfected))+
   theme(plot.title = element_text(hjust = 0.5))+
   theme(strip.text=element_text(angle=90, vjust = 0.5))
 ggsave(paste(outputPlotDirectory, outputPlotNameBase, '_InfInd_sep.png', sep=''), width=15, height=10, units='cm', dpi=1200)
+
+#### ??????????? Cell count odd
+
 
 # double y axis plot - normalized infection index infected wells only
 plaqueOut_infected['fudgeTotal'] <- CalcFudgeAxis(y1=plaqueOut_infected$normRelInfected, y2=plaqueOut_infected$normRelNuclei)$yf

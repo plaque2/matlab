@@ -20,8 +20,8 @@
 library(stringr)
 
 # User input
-plaqueOutputFile <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/170206-AntiVir-confirm-p13_Plate_3716_ImageData.csv'
-layoutFile <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Layouts/Est_p13_vHAdV_d4e6.csv'
+plaqueOutputFile <- 'N:/antivir_screen/6-prestwick/6-11_adeno_confirmation/170619-6-11-HAdV_Plate_19/Results/170619-6-11-HAdV_Plate_19_ImageData.csv'
+layoutFile <- 'N:/antivir_screen/6-prestwick/6-11_adeno_confirmation/170619-6-11-HAdV_Plate_19/Layouts/BafA_Tit2_p2_vHRV-GFP_d25e4.csv'
 plateName = str_match(plaqueOutputFile, '(^.*/(.+)_ImageData.csv$)')[,3]
 head(plateName)
 virusName = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,4]
@@ -30,14 +30,14 @@ virusDilution = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,5]
 head(virusDilution)
 establishmentPlateNumber = str_match(layoutFile, '(^.*/Est_p(.+)_v(.+)_d(.+).csv$)')[,3]
 head(establishmentPlateNumber)
-imagingPlateNumber = str_match(plaqueOutputFile, '(^.*/170206-AntiVir-confirm-p13_Plate_(.+)_ImageData.csv$)')[,3]
+imagingPlateNumber = str_match(plaqueOutputFile, '(^.*/170619-6-11-HAdV_Plate_(.+)_ImageData.csv$)')[,3]
 head(imagingPlateNumber)
 
 # Output setup
-plotTitle = 'HAdV (1:4,000,000), 3 dpi on A549 ATCC'
-outputPlotDirectory <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/postprocessed/Graphs/' 
+plotTitle = 'HAdV (1:1,000,000), 64 hpi on A549 ATCC'
+outputPlotDirectory <- 'N:/antivir_screen/6-prestwick/6-11_adeno_confirmation/170619-6-11-HAdV_Plate_19/Results/postprocessed/Graphs/' 
 outputPlotNameBase <- paste(virusName, virusDilution, sep="_")
-outputAnalysisDirectory <- 'N:/antivir_screen/6-prestwick/6-5_virus_confirmation/Results/postprocessed/'
+outputAnalysisDirectory <- 'N:/antivir_screen/6-prestwick/6-11_adeno_confirmation/170619-6-11-HAdV_Plate_19/Results/postprocessed/'
 
 # Data input
 plaqueOut <- read.csv(plaqueOutputFile)
@@ -175,6 +175,15 @@ plaqueOut_infected$normRelNuclei <- plaqueOut_infected$numberOfNuclei/mean(plaqu
 # Number of Plaques normalized to mean Mock number of plaques = non-treated, infected
 plaqueOut_infected$normRelPlaques <- plaqueOut_infected$numberOfPlaques/mean(plaqueOut_infected[plaqueOut_infected$drug=='Mock', 'numberOfPlaques'])
 
+## Control Compound Mean 
+plaquesDFT_1uM_mean = mean(plaqueOut_infected[plaqueOut_infected$drug=='DFT' & plaqueOut_infected$conc=='1', 'numberOfPlaques'])
+plaquesDFT_1uM_mean_normalized = mean(plaqueOut_infected[plaqueOut_infected$drug=='DFT' & plaqueOut_infected$conc=='1', 'normRelPlaques'])
+
+normInfectionIndexDFT_1uM_mean = mean(plaqueOut_infected[plaqueOut_infected$drug=='DFT' & plaqueOut_infected$conc=='1', 'normRelInfected'])
+normNumberOfNucleiDFT_1uM_mean = mean(plaqueOut_infected[plaqueOut_infected$drug=='DFT' & plaqueOut_infected$conc=='1', 'normRelNuclei'])
+
+infectednucleiDFT_1uM_mean = mean(plaqueOut_infected[plaqueOut_infected$drug=='DFT' & plaqueOut_infected$conc=='1', 'numberOfInfectedNuclei'])
+infectednucleiDFT_1uM_mean_normalized = infectednucleiDFT_1uM_mean / mean(plaqueOut_infected[plaqueOut_infected$drug=='DMSO' & plaqueOut_infected$conc=='0.1', 'numberOfInfectedNuclei'])
 
 # Export ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -292,36 +301,6 @@ ggplot(plaqueOut_drugsInfected, aes(y=normSolventRelPlaques, x=conc))+
   theme(strip.text=element_text(angle=90, vjust = 0))+
   geom_hline(yintercept = 0.8, col='darkgrey')
 ggsave(paste(outputPlotDirectory, outputPlotNameBase, '_DrugEffectPlaques.png', sep=''), width=11, height=10, units='cm', dpi=1200)
-
-# relInfected (not pretty)
-ggplot(plaqueOut_infected, aes(y=relInfected, x=drug, col=as.factor(conc)))+
-  geom_point(position=position_jitterdodge(dodge.width=0.6, jitter.width=0.1))+
-  ylab('Infection Index\n')+
-  xlab('\nCompound')+
-  scale_colour_discrete(name='Compound\nConcentration')+
-  theme_bw()+
-  theme(panel.grid.minor.x=element_blank(), panel.grid.major.x=element_blank())+
-  theme(legend.title=element_text())
-
-#  (not pretty)
-ggplot(plaqueOut, aes(y=relInfected, x=conc))+
-  geom_jitter(width=0.2)+
-  facet_grid(.~drug, scales='free_x')+
-  ylab('Infection Index\n')+
-  xlab('\nConcentration [uM]')+
-  scale_colour_discrete(name='Compound\nConcentration')+
-  theme_bw()+
-  theme(panel.grid.minor.x=element_blank(), panel.grid.major.x=element_blank())+
-  theme(strip.background=element_blank())
-
-# normRelInfected (not pretty)
-ggplot(plaqueOut, aes(y=normRelInfected, x=drug, col=as.factor(conc)))+
-  geom_point(position=position_jitterdodge(dodge.width=0.6, jitter.width=0.1))+
-  ylab('Infection Index (Normalized to Mock Treated)\n')+xlab('\nCompound')+
-  scale_colour_discrete(name='Compound\nConcentration')+
-  theme_bw()+
-  theme(panel.grid.minor.x=element_blank(), panel.grid.major.x=element_blank())+
-  theme(legend.title=element_text())
 
 # double y axis plot - infection index for infected wells only
 plaqueOut_infected['fudgeTotal'] <- CalcFudgeAxis(y1=plaqueOut_infected$relInfected, y2=plaqueOut_infected$numberOfNuclei)$yf
