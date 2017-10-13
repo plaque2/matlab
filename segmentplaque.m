@@ -21,13 +21,14 @@ end
 % inputImage = imgaussfilt(inputImage,10)-bcg;%(inputImage-bcg);
 % imshow(imgaussfilt(inputImage,50)-bcg,[]);
 %  inputImage = adapthisteq(im2uint8(inputImage),'Distribution','rayleigh','Alpha',0.8);
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%ROLLING BALL%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 correctionBallRadius = 30; 
-
 bcg = imopen((inputImage),strel('ball',correctionBallRadius,correctionBallRadius));
-
 inputImage = inputImage - bcg;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
