@@ -63,7 +63,9 @@ if(~testMode)
             
             currentWellImage = stitchWell(fullfile(inputFolder,outputFileList),xNumber,yNumber);
             output = 'Succesfully stitched';
-            
+            %%%%% ADD AS A PARAM IN FUTURE
+%             scaleFactor = 0.2;
+%             currentWellImage = imresize(currentWellImage,scaleFactor);
             imwrite(currentWellImage,fullfile(saveFolder,[parseOutput.wellName{iWell} '_' parseOutput.channelNames{iChannel} '.TIF']));
             
         end

@@ -31,6 +31,21 @@ if nargin == 5
     
 end
 
+%Batch processing with selected wells only
+if nargin == 6
+    
+    
+    
+    parameters.general.plateName = varargin{2};
+    parameters.stitch.inputFolder = varargin{3};
+    parameters.general.processingFolder = varargin{4} ;
+    parameters.general.resultOutputFolder =  varargin{5};
+    parameters.general.fileNamePattern = varargin{6};
+    
+    
+    
+end
+
 
 % disp('Starting...');
 
@@ -287,7 +302,7 @@ if(nucleiFlag|| virusFlag)
             ImageDataArray(currentImageIndex).maxVirusIntensity = max(currentVirusImage(:));
             ImageDataArray(currentImageIndex).totalVirusIntensity = sum(currentVirusImage(:));
             ImageDataArray(currentImageIndex).meanVirusIntensity = mean(currentVirusImage(:));
-            
+            ImageDataArray(currentImageIndex).medianVirusIntensity = median(currentVirusImage(:));
             [numberOfPlaques,plaqueProperties,virusBWImage,peakCoordinates,filteredLabeledBW] =  segmentplaque(currentVirusImage,parameters.virus);
             
          
@@ -495,4 +510,3 @@ end
 %
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
