@@ -1,4 +1,4 @@
-assignLayoutAntiVir <- function(plaqueOut, treatment){
+assignLayoutAntiVir <- function(cpout, treatment){
   
   # load layout
   treatment <- read.csv(treatment, header=T)
@@ -10,10 +10,10 @@ assignLayoutAntiVir <- function(plaqueOut, treatment){
   treatment
   
   #assign treatment
-  for (well in unique(plaqueOut$well)) {
+  for (well in unique(cpout$well)) {
     value <- treatment[treatment$row==substr(well, 1, 1), substr(well, 2, 3)]
-    plaqueOut[plaqueOut$well==well, 'treatment'] <- as.character(value)
+    cpout[cpout$well==well, 'treatment'] <- as.character(value)
   }
-  plaqueOut$treatment <- factor(plaqueOut$treatment)
-  return(plaqueOut)
+  cpout$treatment <- factor(cpout$treatment)
+  return(cpout)
 }
