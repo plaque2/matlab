@@ -60,7 +60,7 @@ if (any(BW(:)))
     % get only objects with larger area than minCometArea
     ind = [imageProps.Area] >=minPlaqueArea ;
     
-    maxPlaqueArea = 6*10^6;
+    maxPlaqueArea = 6*10^7;
    
     plaqueRegionProperties = plaqueRegionProperties(ind);
     
