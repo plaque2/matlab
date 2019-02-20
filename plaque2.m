@@ -471,7 +471,7 @@ if(nucleiFlag|| virusFlag)
         ObjectDataArray = rmfield(ObjectDataArray,'BWImage');
         ObjectDataArray = rmfield(ObjectDataArray,'ConvexImage');
         %Order struct fields
-        [ObjectDataArray,perm] = orderfields(ObjectDataArray,{'wellRow','wellCollumn','numberOfPeaks','Area','Centroid','BoundingBox','MajorAxisLength','MinorAxisLength','Eccentricity','ConvexArea','Perimeter','Roundness','numberOfNucleiInPlaque','maxIntensityGFP','totalIntensityGFP','meanIntensity'});
+        [ObjectDataArray,perm] = orderfields(ObjectDataArray,{'wellRow','wellCollumn','Area','Centroid','BoundingBox','MajorAxisLength','MinorAxisLength','Eccentricity','ConvexArea','Perimeter','Roundness','numberOfPeaks','numberOfNucleiInPlaque','numberOfInfectedNucleiInPlaque','maxIntensityGFP','totalIntensityGFP','meanIntensity'});
         
         
         
