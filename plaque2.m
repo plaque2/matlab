@@ -176,7 +176,7 @@ if(nucleiFlag|| virusFlag)
     
     if(virusFlag)
         %Initiate a counter for total number of plaques
-        totalNumberOfPlaquesDetected = 0;
+        numberOfPlaqueRegions = 0;
     end
     
     
@@ -343,7 +343,7 @@ if(nucleiFlag|| virusFlag)
                         end
                     end
                     
-                    totalNumberOfPlaquesDetected = totalNumberOfPlaquesDetected+1;
+                    numberOfPlaqueRegions = numberOfPlaqueRegions+1;
                     
                     %Initiliaze a blank image with same size as the current Plaque image
                     resizedPlaqueImage=zeros(size(currentVirusImage));
@@ -421,7 +421,7 @@ if(nucleiFlag|| virusFlag)
                     plaqueProperties(iPlaque).meanIntensity = mean(plaqueImage(:));
                     
                     %Write Comet properties structure to Object Data Structure
-                    ObjectDataArray(totalNumberOfPlaquesDetected)= plaqueProperties(iPlaque);
+                    ObjectDataArray(numberOfPlaqueRegions)= plaqueProperties(iPlaque);
                     
                     
                     
@@ -470,10 +470,17 @@ if(nucleiFlag|| virusFlag)
         ObjectDataArray = rmfield(ObjectDataArray,'Image');
         ObjectDataArray = rmfield(ObjectDataArray,'BWImage');
         ObjectDataArray = rmfield(ObjectDataArray,'ConvexImage');
-        ObjectData = struct2dataset(ObjectDataArray(:));
+        %Order struct fields
+        [ObjectDataArray,perm] = orderfields(ObjectDataArray,{'wellRow','wellCollumn','numberOfPeaks','Area','Centroid','BoundingBox','MajorAxisLength','MinorAxisLength','Eccentricity','ConvexArea','Perimeter','Roundness','numberOfNucleiInPlaque','maxIntensityGFP','totalIntensityGFP','meanIntensity'});
+        
+        
+        
+        
+        ObjectData = struct2table(ObjectDataArray);
+        
         %     export(ObjectData,'XLSFile',fullfile(resultOutputPath,[plateName '_ObjectData.xlsx']));
         %    export(ObjectData,'File',fullfile(resultOutputFolder,[plateName '_ObjectData.csv']),'Delimiter',',');
-        writetable(dataset2table(ObjectData),fullfile(resultOutputFolder,[plateName '_ObjectData.csv']));
+        writetable(ObjectData,fullfile(resultOutputFolder,[plateName '_ObjectData.csv']));
         save(fullfile(resultOutputFolder,plateName),'ImageDataArray','ObjectDataArray');
     else
         save(fullfile(resultOutputFolder,plateName),'ImageDataArray');

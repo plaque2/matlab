@@ -53,7 +53,7 @@ if (any(BW(:)))
     
     
     %Calculate various region properties of the image
-    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity');%'EquivDiameter'
+    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity','Perimeter');%'EquivDiameter'
     
     %%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     plaqueRegionProperties = imageProps;
@@ -67,9 +67,19 @@ if (any(BW(:)))
     ind = [plaqueRegionProperties.Area] <= maxPlaqueArea ;
     
     plaqueRegionProperties = plaqueRegionProperties(ind);
+    
+    
+    % compute the roundness metric
+    roundness = num2cell(4*pi*[plaqueRegionProperties.Area]./[plaqueRegionProperties.Perimeter].^2);
+    [plaqueRegionProperties.Roundness]  = roundness{:};
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if (length(plaqueRegionProperties)~=0)
+        
+        
+        numberOfPeaks = num2cell(ones(1,length(plaqueRegionProperties)));
+        [plaqueRegionProperties.numberOfPeaks]  = numberOfPeaks{:};
         
         % % FINE DETECTION
         if (enableFineDetection)
@@ -126,7 +136,7 @@ if (any(BW(:)))
                     
                     
                     %Get the original non-black and white image of the
-                    %plaque and mask it with the b&w filtered palque region
+                    %plaque and mask it with the b&w filtered plaque region
                     switch class(inputImage)
                         case 'uint8'
                             plaqueImage = inputImage(xRange,yRange).*uint8(plaqueBWImage);
@@ -135,7 +145,7 @@ if (any(BW(:)))
                             plaqueImage = inputImage(xRange,yRange).*uint16(plaqueBWImage);
                             
                         otherwise
-                            error('WrongInputTYpe','input image is not 8 or 16 bit grayscale tif');
+                            error('WrongInputType','input image is not 8 or 16 bit grayscale tif');
                     end
                     
                     
@@ -144,16 +154,17 @@ if (any(BW(:)))
                     %find peaks with specified region size
                     currentRegionPeakMap   = imextendedmax(filteredImage,peakRegionSize);
                     
+                    labelPeakMaps = bwlabel(currentRegionPeakMap);
+                    numberOfPeaks = max(labelPeakMaps(:));
+                    plaqueRegionProperties(iPlaque).numberOfPeaks = numberOfPeaks;
+                    
+                    numOfPlaques = numOfPlaques + numberOfPeaks;
                     %layout the detected objects on the black and white
                     %filtered Image
                     filteredLabeledBW(xRange,yRange)= filteredLabeledBW(xRange,yRange) + uint16(plaqueBWImage).*iPlaque;
                     
                     peakMap(xRange,yRange) = peakMap(xRange,yRange) + currentRegionPeakMap;
                 end
-                %label the detected peaks
-                labelPeakMaps = bwlabel(peakMap);
-                %get the number of detected peaks
-                numOfPlaques = max(labelPeakMaps(:));
                 
             end
             
@@ -178,7 +189,7 @@ if (any(BW(:)))
                 yRange = (boundariesOfThePlaqueRegion(1):boundariesOfThePlaqueRegion(1)+boundariesOfThePlaqueRegion(3)-1);
                 
                 %Get the original non-black and white image of the
-                %plaque and mask it with the b&w filtered palque region
+                %plaque and mask it with the b&w filtered plaque region
                 switch class(inputImage)
                     case 'uint8'
                         plaqueImage = inputImage(xRange,yRange).*uint8(plaqueBWImage);
@@ -187,7 +198,7 @@ if (any(BW(:)))
                         plaqueImage = inputImage(xRange,yRange).*uint16(plaqueBWImage);
                         
                     otherwise
-                        error('WrongInputTYpe','input image is not 8 or 16 bit grayscale tif');
+                        error('WrongInputType','input image is not 8 or 16 bit grayscale tif');
                 end
                 
                 %layout the detected objects on the black and white

@@ -66,6 +66,7 @@ if(~testMode)
             %%%%% ADD AS A PARAM IN FUTURE
 %             scaleFactor = 0.2;
 %             currentWellImage = imresize(currentWellImage,scaleFactor);
+            disp([parseOutput.wellName{iWell} '_' parseOutput.channelNames{iChannel} '.TIF'])
             imwrite(currentWellImage,fullfile(saveFolder,[parseOutput.wellName{iWell} '_' parseOutput.channelNames{iChannel} '.TIF']));
             
         end
