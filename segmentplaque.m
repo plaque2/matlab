@@ -1,6 +1,13 @@
 function [numOfPlaques,plaqueRegionProperties,BW,peakMap,filteredLabeledBW] =  segmentplaque(inputImage,virusParams)
 
 
+
+function perimeter = calculatePerimeter(bwImage)
+    
+    perimIm = bwperim(bwImage);
+    perimeter = sum(perimIm(:));  
+end
+
 %ToDo code needs refactoring and better commenting
 minPlaqueArea = virusParams.minPlaqueArea;
 virusThreshold =virusParams.virusThreshold;
@@ -70,9 +77,9 @@ if (any(BW(:)))
     
     
     % compute the roundness metric
-    roundness = num2cell(4*pi*[plaqueRegionProperties.Area]./[plaqueRegionProperties.Perimeter].^2);
+    roundness = num2cell(cellfun(@calculatePerimeter,{plaqueRegionProperties.ConvexImage}).^2./(4*pi*[plaqueRegionProperties.ConvexArea]));
     [plaqueRegionProperties.Roundness]  = roundness{:};
-
+   
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if (length(plaqueRegionProperties)~=0)
