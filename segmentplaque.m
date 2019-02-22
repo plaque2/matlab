@@ -2,11 +2,17 @@ function [numOfPlaques,plaqueRegionProperties,BW,peakMap,filteredLabeledBW] =  s
 
 
 
-function perimeter = calculatePerimeter(bwImage)
+function roundness = calculateRoundness(bwImage)
     
-    perimIm = bwperim(bwImage);
-    perimeter = sum(perimIm(:));  
+    props = regionprops(bwImage,'Area','Perimeter')
+
+    area = props.Area
+    perimeter = props.Perimeter
+     
+    roundness =  (4 * pi * area)./(perimeter .^ 2);
+    
 end
+
 
 %ToDo code needs refactoring and better commenting
 minPlaqueArea = virusParams.minPlaqueArea;
@@ -31,10 +37,10 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%ROLLING BALL%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-correctionBallRadius = 30; 
-bcg = imopen((inputImage),strel('ball',correctionBallRadius,correctionBallRadius));
-inputImage = inputImage - bcg;
+% 
+% correctionBallRadius = 30; 
+% bcg = imopen((inputImage),strel('ball',correctionBallRadius,correctionBallRadius));
+% inputImage = inputImage - bcg;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -60,8 +66,8 @@ if (any(BW(:)))
     
     
     %Calculate various region properties of the image
-    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity','Perimeter');%'EquivDiameter'
-    
+    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity');
+%     imageProps = regionprops(LblMat,'all');%
     %%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     plaqueRegionProperties = imageProps;
     % get only objects with larger area than minCometArea
@@ -77,9 +83,10 @@ if (any(BW(:)))
     
     
     % compute the roundness metric
-    roundness = num2cell(cellfun(@calculatePerimeter,{plaqueRegionProperties.ConvexImage}).^2./(4*pi*[plaqueRegionProperties.ConvexArea]));
+       
+    roundness = num2cell(cellfun(@calculateRoundness,{plaqueRegionProperties.ConvexImage}));
     [plaqueRegionProperties.Roundness]  = roundness{:};
-   
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if (length(plaqueRegionProperties)~=0)
