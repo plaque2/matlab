@@ -1,14 +1,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plaque2.0 batch processing for the AntiVir screen
 %%% Written by Fanny Georgi and Vardan Andriasyan, University of Zurich,
-%%% March s2020
+%%% March 2020
 
 clc
 clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% User inputs
-rootFolder = '...\\antivir_screen\\HAdV_Data_Publication\\3-Screen\\Data_UZH\\';
+rootFolder = '...\\idr0081\\3-Screen\\Data_UZH\\';
 experimentName = 'AntiVirHAdV';
 
 % Since wells are imaged in a single site, no stitching has to be
