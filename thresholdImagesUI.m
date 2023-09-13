@@ -34,14 +34,14 @@ thresholdUIArray.inputImageHolder = axes('units','pixels',...
     'position',[20 70  360 360],...
     'xtick',[],'ytick',[],'box','on','XColor',[0.512 0.512 0.512],'YColor', [0.512 0.512 0.512],'TickDir','in');
 
-thresholdUIArray.inputImageHolderTxt = title(thresholdUIArray.inputImageHolder,'Input Image','FontWeight','bold','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+thresholdUIArray.inputImageHolderTxt = title(thresholdUIArray.inputImageHolder,'Input Image','FontWeight','bold','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 
 thresholdUIArray.zoomedImageHolder = axes('units','pixels',...
     'Parent',thresholdUIArray.mainHandle,...
     'position',[420 70  360 360],...
     'xtick',[],'ytick',[],'box','on','XColor',[0.512 0.512 0.512],'YColor', [0.512 0.512 0.512],'TickDir','in');
 
-thresholdUIArray.zoomedImageHolderTxt = title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontWeight','bold','FontName','Arial','Fonts',16,'Color',[1 1 1]);
+thresholdUIArray.zoomedImageHolderTxt = title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontWeight','bold','FontName','Arial','FontSize',16,'Color',[1 1 1]);
 
 
 % %%%%%WELL SELECTION
@@ -236,7 +236,7 @@ end
 
 
 imshow(overlayRGB,'Parent',thresholdUIArray.zoomedImageHolder);
-title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontName','Arial','FontWeight','bold','Fonts',16,'Color',[1 1 1]);
+title(thresholdUIArray.zoomedImageHolder,'Zoomed Region','FontName','Arial','FontWeight','bold','FontSize',16,'Color',[1 1 1]);
 function applyThreshold(handle,event,thresholdUIArray)
 
 

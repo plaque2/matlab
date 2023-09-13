@@ -7,9 +7,9 @@ if nargin < 1
     listOfAllHandles =  findall(0);
    
 else
-    if (~isnumeric(varargin{1}))
-        error('NonNumericInput','ERROR: Non-numeric handle entered');
-    end
+    % if (~isnumeric(varargin{1}))
+    %     error('NonNumericInput','ERROR: Non-numeric handle entered');
+    % end
     parentHandle = varargin{1};
     listOfAllHandles = findall(parentHandle);
 end

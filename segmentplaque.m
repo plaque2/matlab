@@ -1,6 +1,19 @@
 function [numOfPlaques,plaqueRegionProperties,BW,peakMap,filteredLabeledBW] =  segmentplaque(inputImage,virusParams)
 
 
+
+function roundness = calculateRoundness(bwImage)
+    
+    props = regionprops(bwImage,'Area','Perimeter');
+
+    area = props.Area;
+    perimeter = props.Perimeter;
+     
+    roundness =  (4 * pi * area)./(perimeter .^ 2);
+    
+end
+
+
 %ToDo code needs refactoring and better commenting
 minPlaqueArea = virusParams.minPlaqueArea;
 virusThreshold =virusParams.virusThreshold;
@@ -12,12 +25,34 @@ if(enableFineDetection)
     gaussSigma = virusParams.plaqueGaussianFilterSigma;
     peakRegionSize = virusParams.peakRegionSize ;
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % threshold the input image with the specified threshold
+
+%     se = strel('ball',5,5);
+ % bcg = imopen((inputImage),strel('disk',80)); 
+% bcg = imread('W:\Vardan_Andriasyan\corona\200320-cov-huh7-riba-fixed-50hpi\Stitched\A12_w2.TIF');
+% inputImage = imgaussfilt(inputImage,10)-bcg;%(inputImage-bcg);
+% imshow(imgaussfilt(inputImage,50)-bcg,[]);
+% inputImage = adapthisteq(im2uint8(inputImage),'clipLimit',0.02);
+% figure
+% imshow(inputImage)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%ROLLING BALL%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % 
+% correctionBallRadius = 120; 
+% bcg = imopen((inputImage),strel('ball',correctionBallRadius,correctionBallRadius));
+% inputImage = inputImage - bcg;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 BW = im2bw(inputImage,virusThreshold);
+%mask = imread('Y:\Analysis\160329-Nelli-plates-1-3\16_05_23_mask_p2.tif');
+%  BW = (imbinarize((inputImage),'adaptive','Sensitivity',virusThreshold,'ForegroundPolarity','dark'));
+%BW(~mask)=0;
 numOfPlaques = 0;
 
-
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if (any(BW(:)))
     
@@ -32,16 +67,34 @@ if (any(BW(:)))
     
     
     %Calculate various region properties of the image
-    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity');%'EquivDiameter'
-    
-    
+    imageProps = regionprops(LblMat,'ConvexImage','Image' ,'Centroid','BoundingBox','ConvexArea','Area','MajorAxisLength','MinorAxisLength','Eccentricity');
+%     imageProps = regionprops(LblMat,'all');%
+    %%%%%%%%%%%%%%%%%%%%%%%%CHANGES%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     plaqueRegionProperties = imageProps;
     % get only objects with larger area than minCometArea
     ind = [imageProps.Area] >=minPlaqueArea ;
     
+    maxPlaqueArea = 6*10^7;
+   
     plaqueRegionProperties = plaqueRegionProperties(ind);
     
+    ind = [plaqueRegionProperties.Area] <= maxPlaqueArea ;
+    
+    plaqueRegionProperties = plaqueRegionProperties(ind);
+    
+    
+    % compute the roundness metric
+       
+    roundness = num2cell(cellfun(@calculateRoundness,{plaqueRegionProperties.ConvexImage}));
+    [plaqueRegionProperties.Roundness]  = roundness{:};
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     if (length(plaqueRegionProperties)~=0)
+        
+        
+        numberOfPeaks = num2cell(ones(1,length(plaqueRegionProperties)));
+        [plaqueRegionProperties.numberOfPeaks]  = numberOfPeaks{:};
         
         % % FINE DETECTION
         if (enableFineDetection)
@@ -98,7 +151,7 @@ if (any(BW(:)))
                     
                     
                     %Get the original non-black and white image of the
-                    %plaque and mask it with the b&w filtered palque region
+                    %plaque and mask it with the b&w filtered plaque region
                     switch class(inputImage)
                         case 'uint8'
                             plaqueImage = inputImage(xRange,yRange).*uint8(plaqueBWImage);
@@ -107,7 +160,7 @@ if (any(BW(:)))
                             plaqueImage = inputImage(xRange,yRange).*uint16(plaqueBWImage);
                             
                         otherwise
-                            error('WrongInputTYpe','input image is not 8 or 16 bit grayscale tif');
+                            error('WrongInputType','input image is not 8 or 16 bit grayscale tif');
                     end
                     
                     
@@ -116,16 +169,17 @@ if (any(BW(:)))
                     %find peaks with specified region size
                     currentRegionPeakMap   = imextendedmax(filteredImage,peakRegionSize);
                     
+                    labelPeakMaps = bwlabel(currentRegionPeakMap);
+                    numberOfPeaks = max(labelPeakMaps(:));
+                    plaqueRegionProperties(iPlaque).numberOfPeaks = numberOfPeaks;
+                    
+                    numOfPlaques = numOfPlaques + numberOfPeaks;
                     %layout the detected objects on the black and white
                     %filtered Image
                     filteredLabeledBW(xRange,yRange)= filteredLabeledBW(xRange,yRange) + uint16(plaqueBWImage).*iPlaque;
                     
                     peakMap(xRange,yRange) = peakMap(xRange,yRange) + currentRegionPeakMap;
                 end
-                %label the detected peaks
-                labelPeakMaps = bwlabel(peakMap);
-                %get the number of detected peaks
-                numOfPlaques = max(labelPeakMaps(:));
                 
             end
             
@@ -150,7 +204,7 @@ if (any(BW(:)))
                 yRange = (boundariesOfThePlaqueRegion(1):boundariesOfThePlaqueRegion(1)+boundariesOfThePlaqueRegion(3)-1);
                 
                 %Get the original non-black and white image of the
-                %plaque and mask it with the b&w filtered palque region
+                %plaque and mask it with the b&w filtered plaque region
                 switch class(inputImage)
                     case 'uint8'
                         plaqueImage = inputImage(xRange,yRange).*uint8(plaqueBWImage);
@@ -159,7 +213,7 @@ if (any(BW(:)))
                         plaqueImage = inputImage(xRange,yRange).*uint16(plaqueBWImage);
                         
                     otherwise
-                        error('WrongInputTYpe','input image is not 8 or 16 bit grayscale tif');
+                        error('WrongInputType','input image is not 8 or 16 bit grayscale tif');
                 end
                 
                 %layout the detected objects on the black and white
@@ -189,20 +243,19 @@ end
 
 
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %     Plaque2.0 - a virological assay reloaded
-%     Copyright (C) 2015  Artur Yakimovich, Vardan Andriasyan
-% 
+%     Copyright (C) 2014  Artur Yakimovich, Vardan Andriasyan
+%
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
