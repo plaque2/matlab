@@ -89,7 +89,14 @@ switch typeOfAnalysis
             currentWellData.outputMessage{1} = ['Number of Infected Nuclei:' num2str(numOfInfectedNuclei)] ;
             currentWellData.outputMessage{2} = ['Number of Plaque Regions:'  num2str(length(plaqueProperties))] ;
             currentWellData.outputMessage{3} = ['Number of Plaques:'  num2str(numOfPlaques)] ;
-            
+           
+           
+        else
+             currentWellData.outputMessage{1} = ['Number of Infected Nuclei: 0' ] ;
+            currentWellData.outputMessage{2} = ['Number of Plaque Regions: 0' ] ;
+            currentWellData.outputMessage{3} = ['Number of Plaques: 0'] ;
+           
+           
         end
         %%%%%%%%%%%
     case 'nuclei'

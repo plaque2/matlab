@@ -38,16 +38,20 @@ switch typeOfVisualization
     case 'virus'
         
         overlayRGB=convert2RGB(inputImage,[1 1 1]);
-        if(get(testWindowHandleArray.thresholdedImageOverlayCheckBox,'Value'))
-            virusOverlayRGB = convert2RGB(currentWellData.virusBWImage,[0.01 1 0.01]);
-            overlayRGB(virusOverlayRGB>0) = virusOverlayRGB(virusOverlayRGB >0);
-            plaquePerimeterOverlayRGB = currentWellData.labeledPerimetersOfPlaqueRegions;
-            overlayRGB(plaquePerimeterOverlayRGB>0) = plaquePerimeterOverlayRGB(plaquePerimeterOverlayRGB >0);
+        if(isfield(currentWellData,'virusBWImage'))
+            if(get(testWindowHandleArray.thresholdedImageOverlayCheckBox,'Value'))
+                virusOverlayRGB = convert2RGB(currentWellData.virusBWImage,[0.01 1 0.01]);
+                overlayRGB(virusOverlayRGB>0) = virusOverlayRGB(virusOverlayRGB >0);
+                plaquePerimeterOverlayRGB = currentWellData.labeledPerimetersOfPlaqueRegions;
+                overlayRGB(plaquePerimeterOverlayRGB>0) = plaquePerimeterOverlayRGB(plaquePerimeterOverlayRGB >0);
+            end
         end
-        if(isfield(testWindowHandleArray,'localMaximaOverlayCheckBox'))
-            if(get(testWindowHandleArray.localMaximaOverlayCheckBox,'Value'))
-                localMaximaOverlayRGB = convert2RGB(currentWellData.peakMap,[1 0.01 0.01]);
-                overlayRGB(localMaximaOverlayRGB>0) = localMaximaOverlayRGB(localMaximaOverlayRGB>0);
+        if(isfield(currentWellData,'peakMap'))
+            if(isfield(testWindowHandleArray,'localMaximaOverlayCheckBox'))
+                if(get(testWindowHandleArray.localMaximaOverlayCheckBox,'Value'))
+                    localMaximaOverlayRGB = convert2RGB(currentWellData.peakMap,[1 0.01 0.01]);
+                    overlayRGB(localMaximaOverlayRGB>0) = localMaximaOverlayRGB(localMaximaOverlayRGB>0);
+                end
             end
         end
         imshow(overlayRGB,'Parent',testWindowHandleArray.imageHolder);

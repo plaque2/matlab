@@ -401,8 +401,9 @@ try
     
     % imshow(imresize(imread('C:\Users\Vardan\Documents\MATLAB\plaque2.0\src\processing-data\D01_w2.TIF'),0.1),'Parent',testWindowHandleArray.imageHolder);
     visualizeWell(testWindowHandleArray);
-    
+    if(isfield(currentWellData,'outputMessage'))
     writeinlog(testWindowHandleArray.testWindowOutputPanelTextEdit,currentWellData.outputMessage');
+    end
     switchOnOffAllGUIControls(testWindowHandleArray.mainHandle);
     
 catch ErrorMessage
